@@ -1,0 +1,28 @@
+/* You can add global styles to this file, and also import other style files 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+*/
+
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .notification-dot {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                z-index: 50;
+            }
+            .sidebar.active {
+                left: 0;
+            }
+        }

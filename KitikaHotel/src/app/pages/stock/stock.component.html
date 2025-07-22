@@ -1,0 +1,41 @@
+<div class="p-6">
+  <h2 class="text-2xl font-bold mb-4 text-gray-800">ÉCONOMA - Gestion du Stock</h2>
+
+  <!-- Alertes seuils critiques -->
+  <div *ngIf="criticalItems.length > 0" class="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded">
+    <h3 class="text-red-600 font-semibold">⚠ Alertes de Stock Critique</h3>
+    <ul class="list-disc pl-6 text-red-800">
+      <li *ngFor="let item of criticalItems">{{ item.nom }} ({{ item.quantite }} restants)</li>
+    </ul>
+  </div>
+
+  <!-- Tableau du stock actuel -->
+  <div class="bg-white rounded shadow overflow-x-auto">
+    <table class="min-w-full table-auto">
+      <thead class="bg-gray-100 text-left">
+        <tr>
+          <th class="px-4 py-2">Désignation</th>
+          <th class="px-4 py-2">Catégorie</th>
+          <th class="px-4 py-2">Quantité</th>
+          <th class="px-4 py-2">Seuil Critique</th>
+          <th class="px-4 py-2">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of stock" class="border-b hover:bg-gray-50">
+          <td class="px-4 py-2">{{ item.nom }}</td>
+          <td class="px-4 py-2">{{ item.categorie }}</td>
+          <td class="px-4 py-2">{{ item.quantite }}</td>
+          <td class="px-4 py-2">{{ item.seuilCritique }}</td>
+          <td class="px-4 py-2">
+            <button (click)="commander(item)" class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1 rounded">
+              Commander
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Historique ou commande en attente (bonus pour plus tard) -->
+</div>

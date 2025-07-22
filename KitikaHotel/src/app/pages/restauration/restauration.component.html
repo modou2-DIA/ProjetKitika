@@ -1,0 +1,25 @@
+<div class="p-6">
+  <h2 class="text-2xl font-bold mb-4 text-gray-800">Gestion Restauration</h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div class="bg-white p-4 rounded shadow">
+      <h3 class="font-semibold text-lg">Total Ventes Aujourd'hui</h3>
+      <p class="text-2xl text-green-600 mt-2">{{ totalVentes | currency }}</p>
+    </div>
+    <div class="bg-white p-4 rounded shadow">
+      <h3 class="font-semibold text-lg">Commandes par Service</h3>
+      <ul class="mt-2">
+        <li *ngFor="let s of serviceStats">
+          {{ s.service }} : {{ s.total }} commandes
+        </li>
+      </ul>
+    </div>
+    <div class="bg-white p-4 rounded shadow">
+      <h3 class="font-semibold text-lg">Alertes Stock F&B</h3>
+      <p *ngIf="stockAlerts.length === 0">Aucune alerte</p>
+      <ul *ngIf="stockAlerts.length > 0">
+        <li *ngFor="let alert of stockAlerts" class="text-red-600">{{ alert }}</li>
+      </ul>
+    </div>
+  </div>
+</div>

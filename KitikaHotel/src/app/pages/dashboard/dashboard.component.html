@@ -1,0 +1,206 @@
+   <!-- Dashboard Content -->
+            <main class="p-4 md:p-6">
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="dashboard-card bg-white rounded-lg shadow p-6 transition duration-300">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm">Taux d'Occupation</p>
+                                <h3 class="text-2xl font-bold text-gray-800">75%</h3>
+                                <p class="text-green-500 text-sm mt-1">+5.2% vs hier</p>
+                            </div>
+                            <div class="bg-blue-100 p-3 rounded-full">
+                                <i class="fas fa-bed text-blue-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card bg-white rounded-lg shadow p-6 transition duration-300">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm">Revenu Aujourd'hui</p>
+                                <h3 class="text-2xl font-bold text-gray-800">$12,450</h3>
+                                <p class="text-green-500 text-sm mt-1">+$1,240 vs hier</p>
+                            </div>
+                            <div class="bg-green-100 p-3 rounded-full">
+                                <i class="fas fa-dollar-sign text-green-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card bg-white rounded-lg shadow p-6 transition duration-300">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm">Réservations</p>
+                                <h3 class="text-2xl font-bold text-gray-800">24</h3>
+                                <p class="text-red-500 text-sm mt-1">-3 vs hier</p>
+                            </div>
+                            <div class="bg-purple-100 p-3 rounded-full">
+                                <i class="fas fa-calendar-check text-purple-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card bg-white rounded-lg shadow p-6 transition duration-300">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm">Alertes Stock</p>
+                                <h3 class="text-2xl font-bold text-gray-800">5</h3>
+                                <p class="text-yellow-500 text-sm mt-1">Nouvelle demande</p>
+                            </div>
+                            <div class="bg-yellow-100 p-3 rounded-full">
+                                <i class="fas fa-exclamation-triangle text-yellow-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-white rounded-lg shadow p-6 lg:col-span-2">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-semibold text-gray-800">Performance Mensuelle</h2>
+                            <select class="bg-gray-100 border border-gray-300 rounded px-3 py-1 text-sm">
+                                <option>Ce mois</option>
+                                <option>Le mois dernier</option>
+                                <option>3 derniers mois</option>
+                            </select>
+                        </div>
+                        <div class="h-64">
+                            <!-- Chart placeholder -->
+                             <canvas #performanceCanvas class="w-full h-full"></canvas>
+
+                            <div class="flex items-center justify-center h-full bg-gray-100 rounded">
+                                <p class="text-gray-500">Graphique de performance</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h2 class="text-lg font-semibold text-gray-800 mb-4">Répartition des Revenus</h2>
+                        <div class="h-64">
+                            <!-- Pie chart placeholder -->
+                             <canvas #revenuCanvas class="w-full h-full"></canvas>
+                            <div class="flex items-center justify-center h-full bg-gray-100 rounded">
+                                <p class="text-gray-500">Graphique circulaire</p>
+                              
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activities and Tasks -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h2 class="text-lg font-semibold text-gray-800 mb-4">Activités Récentes</h2>
+                        <div class="space-y-4">
+                            <div class="flex items-start">
+                                <div class="bg-blue-100 p-2 rounded-full mr-3">
+                                    <i class="fas fa-user-check text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium">Nouveau client enregistré</p>
+                                    <p class="text-xs text-gray-500">Jean Dupont - 10:45 AM</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="bg-green-100 p-2 rounded-full mr-3">
+                                    <i class="fas fa-bed text-green-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium">Réservation confirmée</p>
+                                    <p class="text-xs text-gray-500">Chambre 205 - 09:30 AM</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="bg-yellow-100 p-2 rounded-full mr-3">
+                                    <i class="fas fa-exclamation text-yellow-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium">Stock faible détecté</p>
+                                    <p class="text-xs text-gray-500">Vin rouge - 08:15 AM</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="bg-purple-100 p-2 rounded-full mr-3">
+                                    <i class="fas fa-file-invoice-dollar text-purple-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium">Facture générée</p>
+                                    <p class="text-xs text-gray-500">#INV-2023-0456 - Hier</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-semibold text-gray-800">Tâches en Attente</h2>
+                            <button class="text-blue-600 text-sm font-medium">Voir tout</button>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                                <div class="flex items-center">
+                                    <input type="checkbox" class="rounded text-blue-600 mr-3">
+                                    <div>
+                                        <p class="text-sm font-medium">Valider la commande #456</p>
+                                        <p class="text-xs text-gray-500">Demande du Chef</p>
+                                    </div>
+                                </div>
+                                <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">En attente</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                                <div class="flex items-center">
+                                    <input type="checkbox" class="rounded text-blue-600 mr-3">
+                                    <div>
+                                        <p class="text-sm font-medium">Préparer chambre VIP</p>
+                                        <p class="text-xs text-gray-500">Arrivée à 14h</p>
+                                    </div>
+                                </div>
+                                <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Aujourd'hui</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                                <div class="flex items-center">
+                                    <input type="checkbox" class="rounded text-blue-600 mr-3">
+                                    <div>
+                                        <p class="text-sm font-medium">Mettre à jour les tarifs</p>
+                                        <p class="text-xs text-gray-500">Saison haute</p>
+                                    </div>
+                                </div>
+                                <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">Urgent</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                                <div class="flex items-center">
+                                    <input type="checkbox" class="rounded text-blue-600 mr-3">
+                                    <div>
+                                        <p class="text-sm font-medium">Former nouveau personnel</p>
+                                        <p class="text-xs text-gray-500">Réception</p>
+                                    </div>
+                                </div>
+                                <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">Cette semaine</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="mt-6 bg-white rounded-lg shadow p-6">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Actions Rapides</h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <button class="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-200 transition">
+                            <i class="fas fa-user-plus text-blue-600 text-2xl mb-2"></i>
+                            <span class="text-sm font-medium">Nouveau Client</span>
+                        </button>
+                        <button class="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-green-50 hover:border-green-200 transition">
+                            <i class="fas fa-calendar-plus text-green-600 text-2xl mb-2"></i>
+                            <span class="text-sm font-medium">Nouvelle Réservation</span>
+                        </button>
+                        <button class="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-purple-50 hover:border-purple-200 transition">
+                            <i class="fas fa-file-invoice text-purple-600 text-2xl mb-2"></i>
+                        <span class="text-sm font-medium">Nouvelle Facture</span>
+                    </button>
+                    <button class="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-red-50 hover:border-red-200 transition">
+                        <i class="fas fa-box-open text-red-600 text-2xl mb-2"></i>
+                        <span class="text-sm font-medium">Demande d'Achat</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+        <!-- End Dashboard Content -->

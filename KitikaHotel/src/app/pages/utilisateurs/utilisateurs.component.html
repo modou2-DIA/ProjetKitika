@@ -1,0 +1,47 @@
+<div class="p-6">
+  <h2 class="text-2xl font-bold mb-4 text-gray-800">Gestion des Utilisateurs</h2>
+
+  <!-- Barre de création -->
+  <div class="flex flex-wrap gap-4 mb-4 items-end">
+    <input [(ngModel)]="nouvelUtilisateur.nom" type="text" placeholder="Nom complet" class="border p-2 rounded w-full md:w-1/3">
+    <input [(ngModel)]="nouvelUtilisateur.email" type="email" placeholder="Email" class="border p-2 rounded w-full md:w-1/3">
+    <select [(ngModel)]="nouvelUtilisateur.role" class="border p-2 rounded w-full md:w-1/4">
+      <option value="">Sélectionner un rôle</option>
+      <option *ngFor="let r of roles" [value]="r">{{ r }}</option>
+    </select>
+    <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700" (click)="ajouterUtilisateur()">Ajouter</button>
+  </div>
+
+  <!-- Tableau des utilisateurs -->
+  <div class="bg-white rounded shadow overflow-x-auto">
+    <table class="min-w-full table-auto">
+      <thead class="bg-gray-100 text-left">
+        <tr>
+          <th class="px-4 py-2">Nom</th>
+          <th class="px-4 py-2">Email</th>
+          <th class="px-4 py-2">Rôle</th>
+          <th class="px-4 py-2">Statut</th>
+          <th class="px-4 py-2">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of utilisateurs" class="border-b hover:bg-gray-50">
+          <td class="px-4 py-2">{{ user.nom }}</td>
+          <td class="px-4 py-2">{{ user.email }}</td>
+          <td class="px-4 py-2">{{ user.role }}</td>
+          <td class="px-4 py-2">
+            <span [ngClass]="{
+              'text-green-600': user.connecte,
+              'text-red-600': !user.connecte
+            }">
+              {{ user.connecte ? 'Connecté' : 'Déconnecté' }}
+            </span>
+          </td>
+          <td class="px-4 py-2">
+            <button class="text-red-600 text-sm hover:underline" (click)="supprimerUtilisateur(user)">Supprimer</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
