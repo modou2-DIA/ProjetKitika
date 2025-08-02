@@ -1,0 +1,37 @@
+<h2 class="text-xl font-semibold text-gray-800 mb-4">Nouvelle Réservation</h2>
+
+<form [formGroup]="reservationForm" (ngSubmit)="submitReservation()" class="space-y-4">
+  <div>
+    <label class="block text-sm mb-1">Chambre</label>
+    <select formControlName="chambreId" class="w-full border rounded px-3 py-2">
+      <option *ngFor="let chambre of chambresDispo" [value]="chambre.id">
+        Chambre {{ chambre.numero }} - {{ chambre.type }}
+      </option>
+    </select>
+  </div>
+
+  <div>
+    <label class="block text-sm mb-1">Client</label>
+    <select formControlName="clientId" class="w-full border rounded px-3 py-2">
+      <option *ngFor="let client of clients" [value]="client.id">
+        {{ client.nom }} {{ client.prenom }}
+      </option>
+    </select>
+  </div>
+
+  <div class="grid grid-cols-2 gap-4">
+    <div>
+      <label class="block text-sm mb-1">Date début</label>
+      <input type="date" formControlName="dateDebut" class="w-full border px-3 py-2 rounded" />
+    </div>
+    <div>
+      <label class="block text-sm mb-1">Date fin</label>
+      <input type="date" formControlName="dateFin" class="w-full border px-3 py-2 rounded" />
+    </div>
+  </div>
+
+  <div class="flex justify-end gap-3 mt-4">
+    <button type="button" class="px-4 py-2 bg-gray-300 rounded" (click)="cancel()">Annuler</button>
+    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded" [disabled]="reservationForm.invalid">Réserver</button>
+  </div>
+</form>

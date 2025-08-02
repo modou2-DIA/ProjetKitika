@@ -38,5 +38,10 @@ public class Reservation {
     
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private Utilisateur receptionniste; // Celui qui a fait la reservation
+    private Utilisateur receptionniste; // Celui qui a fait la reservation 
+
+    @ManyToOne
+    @JoinColumn(name = "groupe_id")
+    private ReservationGroupee reservationGroupee;
+
 }

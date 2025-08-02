@@ -28,7 +28,8 @@ public class Client {
     private String telephone;
     private String email;
     private String societe;
-    private String adresse;
+    private String adresse; 
+    private String type; // "particulier" ou "societe"
     private String nationalite;
     private String numeroPieceIdentite; 
     

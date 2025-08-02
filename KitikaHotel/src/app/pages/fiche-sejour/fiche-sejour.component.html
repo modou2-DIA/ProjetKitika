@@ -1,0 +1,11 @@
+<h2 class="text-xl font-bold mb-4">Fiche de séjour - Chambre {{ chambre.numero }}</h2>
+
+<ul class="divide-y">
+  <li *ngFor="let item of consommations" class="py-2">
+    {{ item.description }} — {{ item.montant }} TND
+  </li>
+</ul>
+
+<div class="mt-4 text-right">
+  <button class="btn bg-green-600 text-white">Générer Facture</button>
+</div>

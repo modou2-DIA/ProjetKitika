@@ -9,7 +9,8 @@ import { StockComponent } from './pages/stock/stock.component';
 import { FacturationComponent } from './pages/facturation/facturation.component';
 import { ClientsComponent } from './pages/clients/clients.component';
 import { UtilisateursComponent } from './pages/utilisateurs/utilisateurs.component';
-
+import { AjouterChambreComponent } from './pages/ajouter-chambre/ajouter-chambre.component';
+import { ReservationGroupeeComponent } from './pages/reservation-groupee/reservation-groupee.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 
 export const routes: Routes = [
@@ -20,7 +21,9 @@ export const routes: Routes = [
   { path: 'stock', component: StockComponent },
   { path: 'facturation', component: FacturationComponent },
   { path: 'client', component: ClientsComponent },
-  { path: 'utilisateurs', component: UtilisateursComponent },
+  { path: 'utilisateurs', component: UtilisateursComponent }, 
+   { path: 'add-room', component: AjouterChambreComponent},
+   {path: 'reservation-groupee', component: ReservationGroupeeComponent},
   { path: '**', component: NotFoundComponent } // Page 404
 ];
 

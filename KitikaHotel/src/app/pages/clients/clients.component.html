@@ -11,6 +11,14 @@
     </select>
   </div>
 
+ <!-- Bouton Ajouter -->
+  <div class="flex justify-end mb-4">
+    <button (click)="ouvrirFormulaireAjout()" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+      + Ajouter un client
+    </button>
+  </div>
+
+
   <!-- Tableau des clients -->
   <div class="bg-white rounded shadow overflow-x-auto">
     <table class="min-w-full table-auto">
@@ -26,7 +34,7 @@
       <tbody>
         <tr *ngFor="let client of filtrerClients()" class="border-b hover:bg-gray-50">
           <td class="px-4 py-2">{{ client.nom }}</td>
-          <td class="px-4 py-2">{{ client.tel }}</td>
+          <td class="px-4 py-2">{{ client.telephone }}</td>
           <td class="px-4 py-2">{{ client.email }}</td>
           <td class="px-4 py-2 capitalize">{{ client.type }}</td>
           <td class="px-4 py-2 space-x-2">
@@ -38,3 +46,70 @@
     </table>
   </div>
 </div>
+
+<ng-template #modalAjoutClient>
+  <div class="p-6 w-full max-w-lg bg-white rounded shadow-lg">
+    <h2 class="text-xl font-semibold text-gray-800 mb-4">Ajouter un Client</h2>
+
+    <form (ngSubmit)="ajouterClient()" class="space-y-3">
+      <input type="text" [(ngModel)]="nouveauClient.nom" name="nom" placeholder="Nom *" class="w-full p-2 border rounded" required />
+      
+      <input type="text" [(ngModel)]="nouveauClient.prenom" name="prenom" placeholder="Prénom" class="w-full p-2 border rounded" />
+
+      <input type="text" [(ngModel)]="nouveauClient.telephone" name="telephone" placeholder="Téléphone *" class="w-full p-2 border rounded" required />
+
+      <input type="email" [(ngModel)]="nouveauClient.email" name="email" placeholder="Email *" class="w-full p-2 border rounded" required />
+
+      <input type="text" [(ngModel)]="nouveauClient.numeroPieceIdentite" name="numeroPieceIdentite" placeholder="N° pièce d'identité" class="w-full p-2 border rounded" />
+
+      <input type="text" [(ngModel)]="nouveauClient.adresse" name="adresse" placeholder="Adresse" class="w-full p-2 border rounded" />
+
+      <input type="text" [(ngModel)]="nouveauClient.nationalite" name="nationalite" placeholder="Nationalité" class="w-full p-2 border rounded" />
+
+      <input type="text" [(ngModel)]="nouveauClient.societe" name="societe" placeholder="Société (si entreprise)" class="w-full p-2 border rounded" />
+
+      <select [(ngModel)]="nouveauClient.societe" name="type" class="w-full p-2 border rounded">
+        <option value="particulier">Particulier</option>
+        <option value="societe">Société</option>
+      </select>
+
+      <div class="flex justify-end mt-4 gap-3">
+        <button type="button" (click)="fermerModal()" class="px-4 py-2 bg-gray-300 rounded">Annuler</button>
+        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Enregistrer</button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<!-- Modal Voir Client -->
+<ng-template #modalVoirClient>
+  <div class="bg-white p-6 rounded shadow w-full max-w-md">
+    <h3 class="text-xl font-semibold mb-4">Informations du Client</h3>
+    <ul class="space-y-2 text-gray-700 text-sm">
+      <li><strong>Nom :</strong> {{ clientSelectionne?.nom }}</li>
+      <li><strong>Prénom :</strong> {{ clientSelectionne?.prenom || '-' }}</li>
+      <li><strong>Téléphone :</strong> {{ clientSelectionne?.telephone }}</li>
+      <li><strong>Email :</strong> {{ clientSelectionne?.email }}</li>
+      <li><strong>Adresse :</strong> {{ clientSelectionne?.adresse || '-' }}</li>
+      <li><strong>Nationalité :</strong> {{ clientSelectionne?.nationalite || '-' }}</li>
+      <li><strong>Société :</strong> {{ clientSelectionne?.societe || '-' }}</li>
+      <li><strong>Type :</strong> {{ clientSelectionne?.type }}</li>
+      <li><strong>N° Pièce :</strong> {{ clientSelectionne?.numeroPieceIdentite || '-' }}</li>
+    </ul>
+    <div class="text-right mt-4">
+      <button class="bg-blue-600 text-white px-4 py-2 rounded" (click)="fermerModal()">Fermer</button>
+    </div>
+  </div>
+</ng-template>
+
+<!-- Modal Confirmation Suppression -->
+<ng-template #modalConfirmerSuppression>
+  <div class="bg-white p-6 rounded shadow w-full max-w-md">
+    <h3 class="text-xl font-semibold mb-4 text-red-700">Confirmation de suppression</h3>
+    <p>Êtes-vous sûr de vouloir supprimer <strong>{{ clientSelectionne?.nom }}</strong> ?</p>
+    <div class="mt-6 flex justify-end gap-3">
+      <button class="bg-gray-300 px-4 py-2 rounded" (click)="fermerModal()">Annuler</button>
+      <button class="bg-red-600 text-white px-4 py-2 rounded" (click)="confirmerSuppression()">Supprimer</button>
+    </div>
+  </div>
+</ng-template>

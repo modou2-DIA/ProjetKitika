@@ -1,34 +1,63 @@
-<!-- hebergement.component.html -->
 <div class="container mx-auto px-4 py-6">
-  <h2 class="text-2xl font-bold text-blue-800 mb-6">Gestion des Chambres</h2>
+  <h2 class="text-2xl font-bold text-blue-800 mb-6">Module Hébergement</h2>
 
-  <!-- Actions principales -->
-  <div class="mb-4 flex flex-wrap gap-2">
-    <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-      Ajouter une Chambre
-    </button>
-    <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-      Réserver une Chambre
-    </button>
+  <!-- 🔍 Barre de recherche dynamique -->
+  <div class="bg-white rounded shadow p-4 mb-6 flex flex-wrap gap-4">
+    <input type="text" [(ngModel)]="searchTerm" (input)="filtrerChambres()"
+           placeholder="Rechercher par numéro ou type"
+           class="border border-gray-300 rounded px-3 py-2 w-full md:w-1/3" />
+
+    <select [(ngModel)]="statutFiltre" (change)="filtrerChambres()"
+            class="border border-gray-300 rounded px-3 py-2 w-full md:w-1/4">
+      <option value="">Tous les statuts</option>
+      <option value="Libre">Libre</option>
+      <option value="Occupée">Occupée</option>
+    </select>
+
+    <select [(ngModel)]="typeFiltre" (change)="filtrerChambres()"
+            class="border border-gray-300 rounded px-3 py-2 w-full md:w-1/4">
+      <option value="">Tous les types</option>
+      <option value="Simple">Simple</option>
+      <option value="Double">Double</option>
+      <option value="Suite">Suite</option>
+    </select>
   </div>
 
-  <!-- Tableau des chambres -->
+  <!-- 🔘 Boutons d’action -->
+  <div class="flex flex-wrap gap-4 mb-6">
+    <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700" (click)="openReservationForm()">
+      Réserver une chambre
+    </button>
+    <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700" (click)="checkInSelected()">
+      Check-In
+    </button>
+    <button class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600" (click)="checkOutSelected()">
+      Check-Out
+    </button>
+  <button class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700" (click)="ajouterChambre()">
+  Ajouter une Chambre
+</button>
+
+  </div>
+
+  <!-- 📋 Tableau des chambres -->
   <div class="overflow-x-auto">
     <table class="min-w-full bg-white shadow rounded-lg">
       <thead class="bg-gray-100">
         <tr>
           <th class="py-2 px-4 text-left">Numéro</th>
           <th class="py-2 px-4 text-left">Type</th>
-          <th class="py-2 px-4 text-left">Prix</th>
+          <th class="py-2 px-4 text-left">Prix/Nuit</th>
           <th class="py-2 px-4 text-left">Statut</th>
+          <th class="py-2 px-4 text-left">Hors Service</th>
           <th class="py-2 px-4 text-left">Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let chambre of chambres" class="border-b">
+        <tr *ngFor="let chambre of chambresFiltrees" class="border-b">
           <td class="py-2 px-4">{{ chambre.numero }}</td>
           <td class="py-2 px-4">{{ chambre.type }}</td>
-          <td class="py-2 px-4">{{ chambre.prix | currency:'EUR' }}</td>
+          <td class="py-2 px-4">{{ chambre.prixParNuit }} TND</td>
           <td class="py-2 px-4">
             <span [ngClass]="{
               'text-green-600': chambre.statut === 'Libre',
@@ -38,8 +67,10 @@
             </span>
           </td>
           <td class="py-2 px-4">
-            <button class="text-blue-600 hover:underline mr-2" (click)="editChambre(chambre)">Modifier</button>
-            <button class="text-red-600 hover:underline" (click)="deleteChambre(chambre.id)">Supprimer</button>
+            {{ chambre.horsService ? 'Oui' : 'Non' }}
+          </td>
+          <td class="py-2 px-4 flex flex-wrap gap-2">
+            <button class="text-blue-600 hover:underline" (click)="selectChambre(chambre)">Sélectionner</button>
           </td>
         </tr>
       </tbody>

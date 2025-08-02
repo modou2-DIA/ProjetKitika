@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/chambres")
 public class ChambreController {
@@ -58,5 +59,9 @@ public class ChambreController {
     @PutMapping("/{id}/statut")
     public void changerStatut(@PathVariable int id, @RequestParam String statut) {
         chambreService.changerStatut(id, statut);
+    } 
+    @GetMapping("/libres")
+    public List<Chambre> getChambresLibres() {
+        return chambreService.getChambresLibres();
     }
 }

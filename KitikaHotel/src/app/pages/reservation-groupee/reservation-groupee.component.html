@@ -1,0 +1,80 @@
+<div class="p-6 bg-white rounded shadow max-w-4xl mx-auto">
+  <h2 class="text-2xl font-semibold mb-4 text-blue-800">Nouvelle Réservation de Groupe</h2>
+
+  <form [formGroup]="form" (ngSubmit)="soumettre()">
+    <!-- Infos générales -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+      <div>
+        <label class="block mb-1">Nom du Groupe</label>
+        <input type="text" formControlName="nomGroupe" class="w-full border p-2 rounded" placeholder="Ex: Séminaire Orange 2025" />
+      </div>
+      <div>
+        <label class="block mb-1">Société Principale</label>
+        <input type="text" formGroupName="societe" formControlName="nom" class="w-full border p-2 rounded" placeholder="Nom de la société" />
+      </div>
+    </div>
+
+    <div formGroupName="societe" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+      <input type="text" formControlName="telephone" class="border p-2 rounded" placeholder="Téléphone société" />
+      <input type="email" formControlName="email" class="border p-2 rounded" placeholder="Email société" />
+      <input type="text" formControlName="adresse" class="border p-2 rounded" placeholder="Adresse" />
+      <input type="text" formControlName="nationalite" class="border p-2 rounded" placeholder="Nationalité" />
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+      <div>
+        <label class="block mb-1">Date Début</label>
+        <input type="date" formControlName="dateDebut" class="w-full border p-2 rounded" />
+      </div>
+      <div>
+        <label class="block mb-1">Date Fin</label>
+        <input type="date" formControlName="dateFin" class="w-full border p-2 rounded" />
+      </div>
+    </div>
+
+    <!-- Sélection des chambres -->
+    <label class="block mb-1 font-medium">Chambres Disponibles</label>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mb-4">
+      <div *ngFor="let chambre of chambresDisponibles">
+        <label class="inline-flex items-center">
+          <input
+            type="checkbox"
+            [value]="chambre.id"
+            [checked]="form.value.chambres?.includes(chambre.id)"
+            (change)="onChambreToggle(chambre.id, $event)"
+          />
+          <span class="ml-2">{{ chambre.numero }} - {{ chambre.type }}</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Liste des clients -->
+    <div formArrayName="clients">
+      <h3 class="text-lg font-semibold text-gray-700 mb-2">Clients du Groupe</h3>
+      <div *ngFor="let client of clients.controls; let i = index" [formGroupName]="i" class="mb-4 border p-4 rounded bg-gray-50">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input class="border p-2 rounded" placeholder="Nom" formControlName="nom" />
+          <input class="border p-2 rounded" placeholder="Prénom" formControlName="prenom" />
+          <input class="border p-2 rounded" placeholder="Téléphone" formControlName="telephone" />
+          <input class="border p-2 rounded" placeholder="Email" formControlName="email" />
+          <input class="border p-2 rounded" placeholder="Société (optionnel)" formControlName="societe" />
+          <input class="border p-2 rounded" placeholder="Nationalité" formControlName="nationalite" />
+        </div>
+        <div class="text-right mt-2" *ngIf="clients.length > 1">
+          <button class="text-red-600 text-sm" (click)="supprimerClient(i)" type="button">Supprimer</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-4 text-right">
+      <button class="text-blue-600 text-sm" type="button" (click)="ajouterClient()">+ Ajouter un client</button>
+    </div>
+
+    <!-- Bouton soumettre -->
+    <div class="text-right">
+      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+        Enregistrer la réservation
+      </button>
+    </div>
+  </form>
+</div>

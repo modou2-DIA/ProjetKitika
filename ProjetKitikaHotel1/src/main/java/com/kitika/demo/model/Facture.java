@@ -31,6 +31,10 @@ public class Facture {
     @OneToMany
     private List<Consommation> consommations; // Liées à la facture
 
-    private boolean payee;
+    private boolean payee; 
+    @OneToOne
+    @JoinColumn(name = "groupe_id")
+    private ReservationGroupee reservationGroupee;
+
 
 }

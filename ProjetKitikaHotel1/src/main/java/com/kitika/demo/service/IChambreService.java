@@ -12,5 +12,6 @@ public interface IChambreService {
 	 public List<Chambre> getChambresDisponibles();
 	 public boolean estChambreDisponible(int id);
 	 public void changerStatut(int id, String nouveauStatut);
-
+	public List<Chambre> getChambresLibres();              
+	     
 }

@@ -1,0 +1,37 @@
+<h2 class="text-lg font-semibold mb-4">Ajouter une Chambre</h2>
+
+<form [formGroup]="chambreForm" (ngSubmit)="onSubmit()" class="space-y-4">
+  <div>
+    <label>Numéro</label>
+    <input formControlName="numero" class="border w-full px-3 py-2 rounded" />
+  </div>
+  <div>
+    <label>Type</label>
+    <select formControlName="type" class="border w-full px-3 py-2 rounded">
+      <option value="Simple">Simple</option>
+      <option value="Double">Double</option>
+      <option value="Suite">Suite</option>
+    </select>
+  </div>
+  <div>
+    <label>Prix/Nuit</label>
+    <input type="number" formControlName="prixParNuit" class="border w-full px-3 py-2 rounded" />
+  </div>
+  <div>
+    <label>Statut</label>
+    <select formControlName="statut" class="border w-full px-3 py-2 rounded">
+      <option value="Libre">Libre</option>
+      <option value="Occupée">Occupée</option>
+    </select>
+  </div>
+  <div>
+    <label>
+      <input type="checkbox" formControlName="horsService" />
+      Hors service
+    </label>
+  </div>
+  <div class="flex justify-end gap-4 mt-4">
+    <button type="button" class="px-4 py-2 bg-gray-300 rounded" (click)="onCancel()">Annuler</button>
+    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Ajouter</button>
+  </div>
+</form>

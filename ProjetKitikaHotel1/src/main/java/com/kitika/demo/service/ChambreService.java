@@ -39,6 +39,9 @@ public class ChambreService implements IChambreService {
     public boolean estChambreDisponible(int id) {
         Chambre chambre = getChambreById(id);
         return chambre != null && "libre".equalsIgnoreCase(chambre.getStatut());
+    } 
+    public List<Chambre> getChambresLibres() {
+        return chambreRepository.findByStatutAndHorsServiceFalse("Libre");
     }
 
     // Mettre à jour le statut
