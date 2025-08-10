@@ -3,104 +3,231 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ReservationFormComponent } from '../reservation-form/reservation-form.component';
-import { ChambreService ,Chambre} from '../../services/chambre.service';
 import { ReservationService } from '../../services/reservation.service';
 import { FicheSejourComponent } from '../fiche-sejour/fiche-sejour.component';
+import { Reservation } from '../../services/reservation.service';
 import { RouterLink } from '@angular/router';
 import { FicheClientService } from '../../services/fiche-client.service';
-import { AjouterChambreComponent } from '../ajouter-chambre/ajouter-chambre.component';
+import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
+import { DialogFeedbackComponent } from '../dialog-feedback/dialog-feedback.component';
+import { FactureService, Facture } from '../../services/facture.service';
+import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { ExtraChargeFormComponent } from '../extra-charge-form/extra-charge-form.component';
+
+import { ExtraChargeService, ExtraCharge } from '../../services/extra-charge.service';
+
+// Mise à jour de l'interface Reservation pour inclure une facture
+declare module '../../services/reservation.service' {
+  interface Reservation {
+    facture?: Facture; // Ajout d'une propriété facture optionnelle
+  }
+}
+
 @Component({
   selector: 'app-hebergement',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatDialogModule],
+  imports: [CommonModule, FormsModule, MatDialogModule, RouterLink],
   templateUrl: './hebergement.component.html',
   styleUrls: ['./hebergement.component.scss']
 })
 export class HebergementComponent implements OnInit {
-  chambres: Chambre[] = [];
-  selectedChambre?: Chambre;
+  reservations: Reservation[] = [];
+  reservationsFiltrees: Reservation[] = [];
+
+  searchTerm: string = '';
+  statutFiltre: string = '';
+  chargesVisibles: { [key: number]: boolean } = {};
+  chargesParReservation: { [key: number]: ExtraCharge[] } = {};
 
   constructor(
-    private chambreService: ChambreService,
     private reservationService: ReservationService,
-    private dialog: MatDialog
+    private ficheClientService: FicheClientService,
+    private factureService: FactureService,
+    private extraChargeService: ExtraChargeService,
+    private dialog: MatDialog,
+    private router: Router,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
-    this.loadChambres();
+    this.chargerReservations();
   }
 
-  loadChambres(): void {
-    this.chambreService.getAll().subscribe(data => {
-      this.chambres = data;
-      this.filtrerChambres();
+  chargerReservations(): void {
+    this.reservationService.getAll().subscribe(data => {
+      this.reservations = data;
+      this.filtrerReservations();
     });
   }
 
-  selectChambre(chambre: Chambre): void {
-    this.selectedChambre = chambre;
+  filtrerReservations(): void {
+    const terme = this.searchTerm.toLowerCase();
+    this.reservationsFiltrees = this.reservations.filter(res => {
+      const clientNom = res.client?.nom?.toLowerCase() || '';
+      const clientPrenom = res.client?.prenom?.toLowerCase() || '';
+      const chambreNumero = res.chambre?.numero || '';
+      const chambreType = res.chambre?.type?.toLowerCase() || '';
+      const statut = res.statut || '';
+
+      const matchClient = clientNom.includes(terme) || clientPrenom.includes(terme);
+      const matchChambre = chambreNumero.includes(terme) || chambreType.includes(terme);
+      const matchStatut = this.statutFiltre === '' || statut === this.statutFiltre;
+
+      return (matchClient || matchChambre) && matchStatut;
+    });
   }
 
-openReservationForm() {
-  this.dialog.open(ReservationFormComponent, {
-      width: '700px',  // ou même 'auto' si tu veux qu’il s’adapte
-  maxHeight: '90vh', // pour éviter les coupures verticales
-  panelClass: 'custom-modal-panel'
-  }).afterClosed().subscribe(result => {
-    if (result) this.loadChambres(); // Recharger les chambres après réservation
+  checkIn(reservation: Reservation) {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Confirmer Check-In',
+        message: `Voulez-vous confirmer le Check-In de ${reservation.client?.nom} ?`
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        if (reservation.id) {
+          this.ficheClientService.creerFicheDepuisReservation(reservation.id).subscribe({
+            next: () => {
+              this.chargerReservations();
+              this.showSuccessModal('Check-In effectué avec succès.');
+            },
+            error: () => {
+              this.showErrorModal("Échec du Check-In.");
+            }
+          });
+        }
+      }
+    });
+  }
+
+
+checkOut(res: Reservation): void {
+  const confirmDialog = this.dialog.open(ConfirmationDialogComponent, {
+    width: '400px',
+    data: {
+      title: "Confirmation",
+      message: `Voulez-vous vraiment effectuer le check-out de ${res.client?.nom} ?`
+    }
+  });
+
+  confirmDialog.afterClosed().subscribe(result => {
+    if (result === true && res.id) {
+      this.ficheClientService.checkoutDepuisReservation(res.id).subscribe({
+        next: () => {
+          // Checkout réussi ✅
+          this.showSuccessModal(`Check-out effectué pour ${res.client?.nom}.`);
+
+          // On tente la génération de facture, mais ce n'est pas bloquant
+          this.factureService.genererFactureDepuisReservation(res.id!).subscribe({
+            next: () => {
+              this.showSuccessModal("Facture générée avec succès.");
+              this.chargerReservations();
+            },
+            error: () => {
+              this.showErrorModal(
+                "⚠️ Facture non générée automatiquement. Veuillez la créer manuellement."
+              );
+              this.chargerReservations();
+            }
+          });
+        },
+        error: () => {
+          this.showErrorModal("Erreur lors du Check-Out. Le statut n'a pas été modifié.");
+        }
+      });
+    }
   });
 }
 
 
-  checkInSelected(): void {
-    if (!this.selectedChambre) return;
+  // Nouvelle méthode pour consulter la facture
+  consulterFacture(res: Reservation): void {
+    if (res.id) {
+      // S'il y a un ID de réservation, on cherche d'abord la facture associée
+      this.factureService.getFactureByReservationId(res.id).subscribe({
+        next: (facture) => {
+          if (facture && facture.id) {
+            this.router.navigate(['/facturation', facture.id]);
+          } else {
+            this.showErrorModal("La facture n'est pas disponible pour cette réservation.");
+          }
+        },
+        error: (err) => {
+          this.showErrorModal("Erreur lors de la recherche de la facture : " + err.message);
+        }
+      });
+    } else {
+      this.showErrorModal("Erreur : l'identifiant de la réservation est manquant.");
+    }
+  }
 
-    this.reservationService.checkIn(this.selectedChambre.id).subscribe(() => {
-      alert("Client enregistré (check-in)");
-      this.loadChambres();
+
+  showSuccessModal(message: string) {
+    this.dialog.open(DialogFeedbackComponent, {
+      width: '400px',
+      data: {
+        titre: 'Succès 🎉',
+        message
+      }
+    });
+    this.chargerReservations();
+  }
+
+  showErrorModal(message: string) {
+    this.dialog.open(DialogFeedbackComponent, {
+      width: '400px',
+      data: {
+        titre: 'Erreur ❌',
+        message
+      }
     });
   }
 
-  checkOutSelected(): void {
-    if (!this.selectedChambre) return;
-
-    this.dialog.open(FicheSejourComponent, {
+  openReservationForm() {
+    this.dialog.open(ReservationFormComponent, {
       width: '600px',
-      data: { chambre: this.selectedChambre }
     });
-  } 
-ajouterChambre() {
-  const dialogRef = this.dialog.open(AjouterChambreComponent, {
-   width: '600px',  // ou même 'auto' si tu veux qu’il s’adapte
-  maxHeight: '90vh', // pour éviter les coupures verticales
-  panelClass: 'custom-modal-panel'
+    this.chargerReservations();
+  }
+
+  envoyerConfirmation(id: number) {
+  if (!id) return;
+
+  this.reservationService.envoyerConfirmation(id).subscribe({
+    next: () => this.showSuccessModal('📧 Confirmation envoyée avec succès ✅'),
+    error: () => this.showErrorModal('❌ Erreur lors de l\'envoi de la confirmation.')
+  });
+}
+
+toggleCharges(reservationId: number) {
+  //this.chargesVisibles[reservationId] = !this.chargesVisibles[reservationId];
+  if (!this.chargesVisibles[reservationId]) {
+    this.extraChargeService.getByReservation(reservationId).subscribe(data => {
+      this.chargesParReservation[reservationId] = data;
+      this.chargesVisibles[reservationId] = true;
+    });
+  } else {
+    this.chargesVisibles[reservationId] = false;
+  }
+}
+
+ouvrirFormulaireExtraCharge(reservationId: number) {
+  const dialogRef = this.dialog.open(ExtraChargeFormComponent, {
+    width: '400px',
+    data: { reservationId }
   });
 
   dialogRef.afterClosed().subscribe(result => {
     if (result) {
-      this.loadChambres(); // recharge la liste
+      this.extraChargeService.add(reservationId, result).subscribe(() => {
+        this.showSuccessModal('Prestation ajoutée ✅');
+        this.toggleCharges(reservationId); // recharge la liste
+      });
     }
   });
 }
-searchTerm: string = '';
-statutFiltre: string = '';
-typeFiltre: string = '';
-chambresFiltrees: any[] = [];
-
-filtrerChambres(): void {
-  this.chambresFiltrees = this.chambres.filter(chambre => {
-    const matchSearch = this.searchTerm === '' || 
-      chambre.numero.includes(this.searchTerm) || 
-      chambre.type.toLowerCase().includes(this.searchTerm.toLowerCase());
-
-    const matchStatut = this.statutFiltre === '' || chambre.statut === this.statutFiltre;
-    const matchType = this.typeFiltre === '' || chambre.type === this.typeFiltre;
-
-    return matchSearch && matchStatut && matchType;
-  });
-}
-
-
-
-
 }

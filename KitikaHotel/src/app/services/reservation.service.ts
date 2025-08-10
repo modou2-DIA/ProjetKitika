@@ -13,7 +13,7 @@ export interface Reservation {
   total: number;
   client: Client;
   chambre: Chambre;
-  receptionniste: Utilisateur;
+  receptionniste?: Utilisateur| null;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -60,6 +60,13 @@ export class ReservationService {
   } 
   getChambresLibres(): Observable<Chambre[]> {
     return this.http.get<Chambre[]>(`${this.apiUrl}/chambres-libres`);
+  } 
+  creerReservationAvecClient(data: Reservation): Observable<any> {
+    return this.http.post(`${this.apiUrl}/avec-client`, data);
   }
+  envoyerConfirmation(id: number) {
+  return this.http.post(`http://localhost:8080/api/reservations/${id}/envoyer-confirmation`, {});
+}
+
 
 }

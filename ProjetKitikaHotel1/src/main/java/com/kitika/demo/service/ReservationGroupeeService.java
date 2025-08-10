@@ -8,4 +8,5 @@ public interface ReservationGroupeeService {
     ReservationGroupee create(ReservationGroupee reservationGroupee);
     List<ReservationGroupee> getAll();
     ReservationGroupee getById(int id);
+     ReservationGroupee addReservationToGroup(int reservationGroupeeId, int reservationId);
 }

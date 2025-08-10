@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 // --- ClientService ---
 export interface Client {
@@ -35,5 +35,16 @@ export class ClientService {
   }
   getById(id: number): Observable<Client> {
     return this.http.get<Client>(`${this.apiUrl}/${id}`);
+  }
+  getSocietes(): Observable<Client[]> {
+    return this.http.get<Client[]>(`${this.apiUrl}/societes`);
+  }
+  searchClients(nom?: string, prenom?: string, entite?: string): Observable<Client[]> {
+    let params = new HttpParams();
+    if (nom) params = params.set('nom', nom);
+    if (prenom) params = params.set('prenom', prenom);
+    if (entite) params = params.set('entite', entite);
+
+    return this.http.get<Client[]>(`${this.apiUrl}/search`, { params });
   }
 }

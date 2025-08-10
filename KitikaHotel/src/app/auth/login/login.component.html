@@ -1,0 +1,10 @@
+<div class="max-w-md mx-auto p-6 bg-white rounded shadow">
+    <h2 class="text-xl mb-4">Connexion</h2>
+    <form [formGroup]="f" (ngSubmit)="submit()">
+      <label>Email</label>
+      <input formControlName="email" class="w-full mb-2 p-2 border rounded" />
+      <label>Mot de passe</label>
+      <input type="password" formControlName="motDePasse" class="w-full mb-4 p-2 border rounded" />
+      <button class="bg-blue-600 text-white px-4 py-2 rounded" [disabled]="f.invalid">Se connecter</button>
+    </form>
+  </div>

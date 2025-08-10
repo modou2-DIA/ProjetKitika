@@ -1,38 +1,54 @@
 <div class="p-6">
-  <h2 class="text-2xl font-bold mb-4 text-gray-800">Module Facturation</h2>
+  <!-- Afficher la facture unique si elle existe, sinon le titre standard -->
+  <ng-container *ngIf="factureUnique">
+    <h2 class="text-2xl font-bold mb-6 text-blue-800">Facture N° {{ factureUnique.id }}</h2>
+  </ng-container>
+  <ng-container *ngIf="!factureUnique">
+    <h2 class="text-2xl font-bold mb-6 text-blue-800">Module de Facturation</h2>
+  </ng-container>
 
-  <!-- Filtres -->
-  <div class="flex flex-wrap gap-4 mb-4">
-    <select [(ngModel)]="filtrePaiement" class="border p-2 rounded shadow-sm">
-      <option value="">Tous les types</option>
-      <option value="comptant">Paiement Comptant</option>
-      <option value="credit">Paiement à Crédit</option>
+  <!-- ⛓️ Barre de recherche et filtres (masquée si une seule facture est affichée) -->
+  <div class="flex flex-wrap gap-4 mb-6" *ngIf="!factureUnique">
+    <input [(ngModel)]="searchClient" type="text" placeholder="Rechercher un client..."
+           class="border border-gray-300 px-3 py-2 rounded shadow-sm w-full md:w-1/3">
+
+    <select [(ngModel)]="filtrePaiement" class="border border-gray-300 px-3 py-2 rounded shadow-sm w-full md:w-1/4">
+      <option value="">Tous les paiements</option>
+      <option value="true">Payées</option>
+      <option value="false">Impayées</option>
     </select>
-    <input [(ngModel)]="searchClient" type="text" placeholder="Rechercher par client..." class="border p-2 rounded shadow-sm">
   </div>
 
-  <!-- Tableau des factures -->
-  <div class="bg-white rounded shadow overflow-x-auto">
-    <table class="min-w-full table-auto">
-      <thead class="bg-gray-100 text-left">
+  <!-- 📄 Tableau des factures -->
+  <div class="bg-white shadow rounded overflow-x-auto">
+    <table class="min-w-full">
+      <thead class="bg-gray-100">
         <tr>
-          <th class="px-4 py-2">N° Facture</th>
-          <th class="px-4 py-2">Client</th>
-          <th class="px-4 py-2">Montant</th>
-          <th class="px-4 py-2">Date</th>
-          <th class="px-4 py-2">Type Paiement</th>
-          <th class="px-4 py-2">Actions</th>
+          <th class="text-left px-4 py-2">Facture N°</th>
+          <th class="text-left px-4 py-2">Client</th>
+          <th class="text-left px-4 py-2">Date</th>
+          <th class="text-left px-4 py-2">Montant Total</th>
+          <th class="text-left px-4 py-2">Statut</th>
+          <th class="text-left px-4 py-2">Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let f of filteredFactures()" class="border-b hover:bg-gray-50">
-          <td class="px-4 py-2">{{ f.numero }}</td>
-          <td class="px-4 py-2">{{ f.client }}</td>
-          <td class="px-4 py-2">{{ f.montant }} DT</td>
-          <td class="px-4 py-2">{{ f.date }}</td>
-          <td class="px-4 py-2 capitalize">{{ f.typePaiement }}</td>
+        <tr *ngFor="let facture of facturesFiltrees" class="border-b hover:bg-gray-50">
+          <td class="px-4 py-2">{{ facture.id }}</td>
+          <td class="px-4 py-2">{{ facture.client.nom }} {{ facture.client.prenom }}</td>
+          <td class="px-4 py-2">{{ facture.dateEmission }}</td>
+          <td class="px-4 py-2">{{ facture.montantTotal }} $</td>
           <td class="px-4 py-2">
-            <button class="text-blue-600 hover:underline text-sm" (click)="genererPDF(f)">🧾 PDF</button>
+            <span [ngClass]="{
+              'text-green-600': facture.payee,
+              'text-red-600': !facture.payee
+            }">
+              {{ facture.payee ? 'Payée' : 'Impayée' }}
+            </span>
+          </td>
+          <td class="px-4 py-2 flex gap-2">
+            <button class="text-blue-600 hover:underline" (click)="genererPDF(facture)">📄 PDF</button>
+            <button *ngIf="!facture.payee" class="text-green-600 hover:underline" (click)="payerFacture(facture)">Régler</button>
           </td>
         </tr>
       </tbody>

@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
 export class RestaurationComponent  implements OnInit {
   totalVentes: number = 12450;
   serviceStats = [
-    { service: 'Petit-déjeuner', total: 45 },
+    { service: 'Petit-déjeuner', total: 40 },
     { service: 'Déjeuner', total: 72 },
     { service: 'Dîner', total: 38 },
   ];

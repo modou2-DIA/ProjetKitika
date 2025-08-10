@@ -1,40 +1,86 @@
-import { Component , OnInit } from '@angular/core';
-import { CommonModule  } from '@angular/common'; 
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router'; // Import pour accéder aux paramètres de l'URL
+import { FactureService, Facture } from '../../services/facture.service';
 
-interface Facture {
-  numero: string;
-  client: string;
-  montant: number;
-  date: string;
-  typePaiement: 'comptant' | 'credit';
-}
 @Component({
   selector: 'app-facturation',
-  imports: [CommonModule,FormsModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './facturation.component.html',
   styleUrl: './facturation.component.scss'
 })
-export class FacturationComponent {
+export class FacturationComponent implements OnInit {
   searchClient: string = '';
   filtrePaiement: string = '';
+  factures: Facture[] = [];
+  facturesFiltrees: Facture[] = [];
+  factureUnique: Facture | null = null; // Nouvelle variable pour une seule facture
 
-  factures: Facture[] = [
-    { numero: 'FCT-001', client: 'Jean Dupont', montant: 120.50, date: '2025-07-05', typePaiement: 'comptant' },
-    { numero: 'FCT-002', client: 'Société X', montant: 800.00, date: '2025-07-06', typePaiement: 'credit' },
-    { numero: 'FCT-003', client: 'Ali Ben', montant: 200.00, date: '2025-07-07', typePaiement: 'comptant' },
-    { numero: 'FCT-004', client: 'Société Y', montant: 1450.00, date: '2025-07-08', typePaiement: 'credit' }
-  ];
+  constructor(
+    private factureService: FactureService,
+    private route: ActivatedRoute // Injection du service ActivatedRoute
+  ) {}
 
-  filteredFactures(): Facture[] {
-    return this.factures.filter(f =>
-      (this.filtrePaiement === '' || f.typePaiement === this.filtrePaiement) &&
-      (this.searchClient === '' || f.client.toLowerCase().includes(this.searchClient.toLowerCase()))
-    );
+  ngOnInit(): void {
+    // Vérifier si un ID de facture est passé dans l'URL
+    this.route.paramMap.subscribe(params => {
+      const factureId = params.get('id');
+      if (factureId) {
+        this.chargerFactureUnique(+factureId);
+      } else {
+        this.chargerFactures();
+      }
+    });
+  }
+
+  chargerFactureUnique(id: number): void {
+    this.factureService.getById(id).subscribe(facture => {
+      this.factureUnique = facture;
+      // On peut aussi afficher la facture dans le tableau pour la cohérence
+      this.factures = [facture];
+      this.filtrerFactures();
+    });
+  }
+
+  chargerFactures(): void {
+    this.factureService.getAll().subscribe(data => {
+      this.factures = data;
+      this.factureUnique = null; // Réinitialiser si on charge toutes les factures
+      this.filtrerFactures();
+    });
+  }
+
+  filtrerFactures(): void {
+    this.facturesFiltrees = this.factures.filter(f => {
+      const matchPaiement = this.filtrePaiement === '' || f.payee.toString() === this.filtrePaiement;
+      const matchClient =
+        this.searchClient === '' ||
+        f.client?.nom?.toLowerCase().includes(this.searchClient.toLowerCase()) ||
+        f.client?.prenom?.toLowerCase().includes(this.searchClient.toLowerCase());
+      return matchPaiement && matchClient;
+    });
   }
 
   genererPDF(facture: Facture): void {
-    // Simulation – à remplacer par une vraie génération PDF
-    alert(`Génération de la facture PDF : ${facture.numero}`);
+    if (facture.id !== undefined) {
+      this.factureService.genererPDF(facture.id);
+    } else {
+      console.error("Erreur : l'identifiant de la facture est manquant.");
+    }
+  }
+
+  payerFacture(facture: Facture): void {
+    if (confirm('Confirmer le règlement de la facture ?')) {
+      if (facture.id !== undefined) {
+        this.factureService.marquerCommePayee(facture.id).subscribe(() => {
+          facture.payee = true;
+          this.filtrerFactures(); // mettre à jour la liste filtrée
+        });
+      } else {
+        console.error("Erreur : l'identifiant de la facture est manquant.");
+      }
+    }
   }
 }

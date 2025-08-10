@@ -12,5 +12,14 @@ public interface IFactureService {
 	 public List<Facture> getFacturesByClient(int clientId);
 	 public List<Facture> getFacturesNonPayees();
 	 public List<Facture> getFacturesPayees() ;
+	 public Facture genererFacture(int ficheId);
+	public Facture getFactureByReservationId(int id);
 
+
+
+
+
+
+
+	 
 }

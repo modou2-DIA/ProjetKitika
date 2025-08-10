@@ -1,31 +1,74 @@
-import { Component,OnInit ,Inject  } from '@angular/core';
-import { ReservationService } from '../../services/reservation.service'; 
-import { CommonModule } from '@angular/common'; 
-import { FormsModule } from '@angular/forms';  
-import { MAT_DIALOG_DATA } from '@angular/material/dialog'; // Ajout de l'import manquant
+import { Component, OnInit, Inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, NgForm } from '@angular/forms';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+
+import { ConsommationService, Consommation, CreateConsommationDto } from '../../services/consommation.service';
+import { ProduitService, Produit } from '../../services/produit.service';
+import { FicheSejourService,FicheSejour } from '../../services/fiche-sejour.service'; // Assurez-vous que ce service existe
 
 @Component({
   selector: 'app-fiche-sejour',
-  imports: [CommonModule,FormsModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './fiche-sejour.component.html',
-  styleUrl: './fiche-sejour.component.scss'
+  styleUrls: ['./fiche-sejour.component.scss']
 })
-
-
 export class FicheSejourComponent implements OnInit {
-  consommations: any[] = [];
-  chambre: any;
+  public consommations: Consommation[] = [];
+  public produitsDisponibles: Produit[] = [];
+  //public ficheSejour: FicheSejour=null; // Assurez-vous que FicheSejour est correctement importé
+  public nouvelleConsommation = {
+    produitId: null,
+    quantite: 1
+  };
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private reservationService: ReservationService
+    @Inject(MAT_DIALOG_DATA) public data: { ficheSejour: FicheSejourService },
+    private consommationService: ConsommationService,
+    private produitService: ProduitService
   ) {
-    this.chambre = data.chambre;
+    //this.ficheSejour = data.ficheSejour;
   }
 
   ngOnInit(): void {
-    /*this.reservationService.getFicheSejour(this.chambre.id).subscribe(data => {
-      this.consommations = data.consommations;
-    });*/
+    this.chargerConsommations();
+    this.chargerProduits();
+  }
+
+  chargerConsommations(): void {
+    /*if (this.ficheSejour && this.ficheSejour.id) {
+      this.consommationService.getByFicheSejourId(this.ficheSejour.id).subscribe(data => {
+        this.consommations = data;
+      });
+    }*/
+  }
+
+  chargerProduits(): void {
+    this.produitService.getAll().subscribe(data => {
+      this.produitsDisponibles = data;
+    });
+  }
+
+  ajouterConsommation(form: NgForm): void {
+    if (form.invalid) {
+      return;
+    }
+
+    const dto: CreateConsommationDto = {
+      ficheSejourId: 2,
+      produitId: form.value.produitId,
+      quantite: form.value.quantite
+    };
+
+    this.consommationService.ajouter(dto).subscribe(() => {
+      this.chargerConsommations(); // Recharger la liste après ajout
+      form.resetForm({ quantite: 1 }); // Réinitialiser le formulaire
+    });
+  }
+
+  // Optionnel : Calculer le total pour affichage
+  getTotalConsommations(): number {
+    return this.consommations.reduce((acc, curr) => acc + curr.prixTotal, 0);
   }
 }

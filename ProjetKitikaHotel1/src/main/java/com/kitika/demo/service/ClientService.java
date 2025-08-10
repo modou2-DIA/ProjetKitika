@@ -33,4 +33,12 @@ public class ClientService implements IClientService{
     public void deleteClient(int id) {
         clientRepository.deleteById(id);
     }
+    @Override
+    public List<Client> getSocietes() {
+        return clientRepository.findByType("societe");
+    }
+    @Override 
+    public List<Client> searchClients(String nom, String prenom, String entite) {
+        return clientRepository.searchClients(nom, prenom, entite);
+    }
 }

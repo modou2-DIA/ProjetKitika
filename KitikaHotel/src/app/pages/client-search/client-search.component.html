@@ -1,0 +1,15 @@
+<div class="search-container">
+  <input
+    type="text"
+    [(ngModel)]="searchTerm"
+    (input)="onSearchChange(searchTerm)"
+    placeholder="Rechercher un client par nom, prénom ou entité"
+    class="border p-2 rounded w-full"
+  />
+
+  <ul *ngIf="results.length > 0" class="bg-white border rounded mt-2 shadow">
+    <li *ngFor="let client of results" class="p-2 hover:bg-gray-100 cursor-pointer">
+      {{ client.nom }} {{ client.prenom }} <span *ngIf="client.societe">- {{ client.societe }}</span>
+    </li>
+  </ul>
+</div>

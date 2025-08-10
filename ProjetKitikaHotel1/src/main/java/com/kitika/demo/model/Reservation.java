@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity 
 @Getter
@@ -42,6 +43,7 @@ public class Reservation {
 
     @ManyToOne
     @JoinColumn(name = "groupe_id")
+    @JsonIgnore // Pour éviter la récursion infinie lors de la sérialisation
     private ReservationGroupee reservationGroupee;
 
 }

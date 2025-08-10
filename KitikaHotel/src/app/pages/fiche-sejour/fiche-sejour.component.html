@@ -1,11 +1,77 @@
-<h2 class="text-xl font-bold mb-4">Fiche de séjour - Chambre {{ chambre.numero }}</h2>
+<!-- Entête de la fiche de séjour 
+<div class="flex justify-between items-center mb-4">
+  <h2 class="text-2xl font-bold text-gray-800">Fiche de Séjour - Client {{ ficheSejour.client.nom }} {{ ficheSejour.client.prenom }}</h2>
+  <p class="text-lg">Chambre: <span class="font-semibold">{{ ficheSejour.reservation.chambre.numero }}</span></p>
+</div>
+-->
+<!-- Section pour ajouter une nouvelle consommation -->
+<div class="bg-white p-4 rounded-lg shadow-md mb-6">
+  <h3 class="text-xl font-semibold mb-3">Ajouter une Consommation</h3>
+  <form #consommationForm="ngForm" (ngSubmit)="ajouterConsommation(consommationForm)" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+    
+    <!-- Sélecteur de produit -->
+    <div class="flex flex-col">
+      <label for="produit" class="text-sm font-medium text-gray-600 mb-1">Produit / Service</label>
+      <select 
+        id="produit" 
+        name="produitId" 
+        [(ngModel)]="nouvelleConsommation.produitId" 
+        required 
+        class="p-2 border rounded-md focus:ring-2 focus:ring-blue-500">
+        <option [ngValue]="null" disabled>Sélectionnez un produit</option>
+        <option *ngFor="let produit of produitsDisponibles" [ngValue]="produit.id">
+          {{ produit.nom }} ({{ produit.prixUnitaire | currency:'TND' }})
+        </option>
+      </select>
+    </div>
 
-<ul class="divide-y">
-  <li *ngFor="let item of consommations" class="py-2">
-    {{ item.description }} — {{ item.montant }} TND
-  </li>
-</ul>
+    <!-- Champ pour la quantité -->
+    <div class="flex flex-col">
+      <label for="quantite" class="text-sm font-medium text-gray-600 mb-1">Quantité</label>
+      <input 
+        type="number" 
+        id="quantite" 
+        name="quantite" 
+        [(ngModel)]="nouvelleConsommation.quantite" 
+        required 
+        min="1" 
+        class="p-2 border rounded-md focus:ring-2 focus:ring-blue-500">
+    </div>
 
-<div class="mt-4 text-right">
-  <button class="btn bg-green-600 text-white">Générer Facture</button>
+    <!-- Bouton de soumission -->
+    <button 
+      type="submit" 
+      [disabled]="consommationForm.invalid" 
+      class="btn bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-400 p-2 rounded-md">
+      Ajouter
+    </button>
+  </form>
+</div>
+
+<!-- Liste des consommations existantes -->
+<div class="bg-white p-4 rounded-lg shadow-md">
+  <h3 class="text-xl font-semibold mb-3">Consommations Enregistrées</h3>
+  <ul class="divide-y divide-gray-200">
+    <li *ngIf="consommations.length === 0" class="py-3 text-gray-500">Aucune consommation pour le moment.</li>
+    <li *ngFor="let item of consommations" class="py-3 flex justify-between items-center">
+      <div>
+        <p class="font-semibold">{{ item.produit.nom }}</p>
+        <p class="text-sm text-gray-600">{{ item.quantite }} x {{ item.produit.prixUnitaire | currency:'TND' }}</p>
+      </div>
+      <div class="text-right">
+        <p class="font-bold text-lg">{{ item.prixTotal | currency:'TND' }}</p>
+        <p class="text-xs text-gray-500">{{ item.dateConsommation | date:'dd/MM/yyyy HH:mm' }}</p>
+      </div>
+    </li>
+  </ul>
+  
+  <!-- Total des consommations -->
+  <div class="mt-4 pt-4 border-t-2 border-gray-200 text-right">
+    <p class="text-xl font-bold">Total des consommations: {{ getTotalConsommations() | currency:'TND' }}</p>
+  </div>
+</div>
+
+<!-- Bouton pour la facturation -->
+<div class="mt-6 text-right">
+  <button class="btn bg-green-600 text-white hover:bg-green-700 p-3 rounded-md text-lg">Générer la Facture Finale</button>
 </div>

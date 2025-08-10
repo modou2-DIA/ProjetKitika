@@ -1,72 +1,100 @@
 <!-- Sidebar -->
 <div class="sidebar bg-blue-800 text-white w-64 flex-shrink-0">
-    <div class="p-4 flex items-center justify-between border-b border-blue-700">
-        <div class="flex items-center space-x-2">
-            <i class="fas fa-hotel text-2xl"></i>
-            <span class="text-xl font-bold">Hotel Kitika</span>
-        </div>
-        <button id="sidebarToggle" class="md:hidden text-white">
-            <i class="fas fa-times"></i>
-        </button>
+  <div class="p-4 flex items-center justify-between border-b border-blue-700">
+    <div class="flex items-center space-x-2">
+      <i class="fas fa-hotel text-2xl"></i>
+      <span class="text-xl font-bold">Hotel Kitika</span>
     </div>
-    <div class="p-4">
-        <div class="mb-6">
-            <div class="text-xs uppercase font-semibold text-blue-300 mb-2">Menu Principal</div>
-            <ul>
-                <li class="mb-1">
-                    <a href="/dashboard" class="flex items-center p-2 rounded hover:bg-blue-700">
-                        <i class="fas fa-tachometer-alt mr-3"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li class="mb-1">
-                    <a href="/hebergement" class="flex items-center p-2 rounded hover:bg-blue-700">
-                        <i class="fas fa-bed mr-3"></i>
-                        <span>Hébergement</span>
-                    </a>
-                </li>
-                <li class="mb-1">
-                    <a href="/restauration" class="flex items-center p-2 rounded hover:bg-blue-700">
-                        <i class="fas fa-utensils mr-3"></i>
-                        <span>Restauration</span>
-                    </a>
-                </li>
-                <li class="mb-1">
-                    <a href="/stock" class="flex items-center p-2 rounded hover:bg-blue-700">
-                        <i class="fas fa-boxes mr-3"></i>
-                        <span>Stock</span>
-                    </a>
-                </li>
-                <li class="mb-1">
-                    <a href="/facturation" class="flex items-center p-2 rounded hover:bg-blue-700">
-                        <i class="fas fa-file-invoice-dollar mr-3"></i>
-                        <span>Facturation</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <div class="mb-6">
-            <div class="text-xs uppercase font-semibold text-blue-300 mb-2">Administration</div>
-            <ul>
-                <li class="mb-1">
-                    <a href="/client" class="flex items-center p-2 rounded hover:bg-blue-700">
-                        <i class="fas fa-users mr-3"></i>
-                        <span>Clients</span>
-                    </a>
-                </li>
-                <li class="mb-1">
-                    <a href="/utilisateurs" class="flex items-center p-2 rounded hover:bg-blue-700">
-                        <i class="fas fa-user-shield mr-3"></i>
-                        <span>Utilisateurs</span>
-                    </a>
-                </li>
-                <li class="mb-1">
-                    <a href="#" class="flex items-center p-2 rounded hover:bg-blue-700">
-                        <i class="fas fa-cog mr-3"></i>
-                        <span>Paramètres</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
+    <button id="sidebarToggle" class="md:hidden text-white">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <div class="p-4">
+    <!-- Menu Principal -->
+    <div class="mb-6">
+      <div class="text-xs uppercase font-semibold text-blue-300 mb-2">Menu Principal</div>
+      <ul>
+        <li class="mb-1">
+          <a routerLink="/dashboard" routerLinkActive="bg-blue-700"
+            class="flex items-center p-2 rounded hover:bg-blue-700">
+            <i class="fas fa-tachometer-alt mr-3"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="mb-1">
+          <a routerLink="/hebergement" routerLinkActive="bg-blue-700"
+            class="flex items-center p-2 rounded hover:bg-blue-700">
+            <i class="fas fa-bed mr-3"></i>
+            <span>Hébergement</span>
+          </a>
+        </li>
+        <li class="mb-1">
+          <a routerLink="/gestion-restauration" routerLinkActive="bg-blue-700"
+            class="flex items-center p-2 rounded hover:bg-blue-700">
+            <i class="fas fa-utensils mr-3"></i>
+            <span>Restauration</span>
+          </a>
+        </li>
+        <li class="mb-1">
+          <a routerLink="/stock" routerLinkActive="bg-blue-700"
+            class="flex items-center p-2 rounded hover:bg-blue-700">
+            <i class="fas fa-boxes mr-3"></i>
+            <span>Stock</span>
+          </a>
+        </li>
+        <li class="mb-1">
+          <a routerLink="/facturation" routerLinkActive="bg-blue-700"
+            class="flex items-center p-2 rounded hover:bg-blue-700">
+            <i class="fas fa-file-invoice-dollar mr-3"></i>
+            <span>Facturation</span>
+          </a>
+        </li>
+      </ul>
     </div>
+
+    <!-- Administration -->
+    <div class="mb-6">
+      <div class="text-xs uppercase font-semibold text-blue-300 mb-2">Administration</div>
+      <ul>
+        <li class="mb-1">
+          <a routerLink="/client" routerLinkActive="bg-blue-700"
+            class="flex items-center p-2 rounded hover:bg-blue-700">
+            <i class="fas fa-users mr-3"></i>
+            <span>Clients</span>
+          </a>
+        </li>
+        <li class="mb-1">
+          <a routerLink="/utilisateurs" routerLinkActive="bg-blue-700"
+            class="flex items-center p-2 rounded hover:bg-blue-700">
+            <i class="fas fa-user-shield mr-3"></i>
+            <span>Utilisateurs</span>
+          </a>
+        </li>
+        <li class="mb-1">
+          <a href="#" class="flex items-center p-2 rounded hover:bg-blue-700">
+            <i class="fas fa-cog mr-3"></i>
+            <span>Paramètres</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Connexion / Profil -->
+    <div class="border-t border-blue-700 pt-4">
+      <button *ngIf="isLoggedIn; else loginBtn"
+        class="flex items-center p-2 rounded hover:bg-red-700 w-full text-left"
+        (click)="confirmLogout()">
+        <i class="fas fa-user-circle mr-3"></i>
+        <span>Profil (Déconnexion)</span>
+      </button>
+
+      <ng-template #loginBtn>
+        <a routerLink="/login" class="flex items-center p-2 rounded hover:bg-green-700">
+          <i class="fas fa-sign-in-alt mr-3"></i>
+          <span>Se connecter</span>
+        </a>
+      </ng-template>
+    </div>
+  </div>
 </div>

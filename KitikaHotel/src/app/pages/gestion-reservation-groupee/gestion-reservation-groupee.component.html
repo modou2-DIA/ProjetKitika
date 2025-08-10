@@ -1,0 +1,124 @@
+<div class="container mx-auto px-4 py-6">
+  <a (click)="retour()" class="flex items-center text-blue-700 hover:text-blue-900 mb-4 cursor-pointer w-fit">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+    </svg>
+    Retour
+  </a>
+
+  <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+    <h2 class="text-2xl font-bold text-blue-800">Réservations Groupées (Sociétés)</h2>
+    <button (click)="ouvrirModalAjout()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mt-4 md:mt-0">
+      + Nouvelle Réservation Groupe
+    </button>
+  </div>
+
+  <!-- 🔍 Barre de recherche et filtres -->
+  <div class="bg-white shadow rounded p-4 mb-6 flex flex-wrap gap-4">
+    <input type="text" [(ngModel)]="searchTerm" (input)="filtrerReservations()"
+           placeholder="Rechercher par société, client ou groupe"
+           class="border border-gray-300 px-3 py-2 rounded w-full md:w-1/3" />
+
+    <select [(ngModel)]="statutFiltre" (change)="filtrerReservations()"
+            class="border border-gray-300 px-3 py-2 rounded w-full md:w-1/4">
+      <option value="">Tous les statuts</option>
+      <option value="En attente">En attente</option>
+      <option value="En séjour">En séjour</option>
+      <option value="Partiel">Partiel</option>
+      <option value="Terminé">Terminé</option>
+    </select>
+  </div>
+
+  <!-- 📋 Tableau des réservations de groupe -->
+  <div class="overflow-x-auto bg-white shadow rounded-lg">
+    <table class="min-w-full">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="text-left py-2 px-4">Société</th>
+          <th class="text-left py-2 px-4">Nom du Groupe</th>
+          <th class="text-left py-2 px-4">Dates</th>
+          <th class="text-left py-2 px-4">Clients</th>
+          <th class="text-left py-2 px-4">Chambres</th>
+          <th class="text-left py-2 px-4">Statut</th>
+          <th class="text-left py-2 px-4">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let groupe of reservationsFiltrees">
+          <tr class="border-b">
+            <td class="py-2 px-4 font-semibold">{{ groupe.societe?.nom }}</td>
+            <td class="py-2 px-4">{{ groupe.nomGroupe }}</td>
+            <td class="py-2 px-4">{{ groupe.dateDebut }} → {{ groupe.dateFin }}</td>
+            <td class="py-2 px-4">{{ groupe.reservations?.length || 0 }} clients</td>
+            <td class="py-2 px-4">{{ groupe.reservations?.length || 0 }} chambres</td>
+            <td class="py-2 px-4">{{ getStatutGroupe(groupe) }}</td>
+            <td class="py-2 px-4 flex flex-col gap-1">
+              <button class="text-blue-600 hover:underline" (click)="groupe.afficherDetails = !groupe.afficherDetails">
+                {{ groupe.afficherDetails ? 'Masquer' : 'Détails' }}
+              </button>
+              <button class="text-green-600 hover:underline" (click)="checkInGroupe(groupe)" [disabled]="getStatutGroupe(groupe) !== 'En attente'">
+                Check-In groupe
+              </button>
+              <button class="text-yellow-600 hover:underline" (click)="checkOutGroupe(groupe)" [disabled]="getStatutGroupe(groupe) === 'Terminé' || getStatutGroupe(groupe) === 'En attente'">
+                Check-Out groupe
+              </button>
+            </td>
+          </tr>
+          <!-- Détails du groupe -->
+          <tr *ngIf="groupe.afficherDetails" class="bg-gray-50">
+            <td colspan="7" class="px-4 py-4">
+              <div class="flex justify-between items-center mb-2">
+                <h3 class="text-lg font-semibold text-blue-800">Détails Société & Clients</h3>
+                <button (click)="ouvrirModalAjoutClient(groupe)"
+                        class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 flex items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  Ajouter un client
+                </button>
+              </div>
+
+              <p class="text-sm mb-2">
+                📧 {{ groupe.societe?.email }} | ☎️ {{ groupe.societe?.telephone }}
+              </p>
+
+              <table class="w-full border mt-4">
+                <thead class="bg-blue-100">
+                  <tr>
+                    <th class="py-2 px-3">Client</th>
+                    <th class="py-2 px-3">Chambre</th>
+                    <th class="py-2 px-3">Date Début</th>
+                    <th class="py-2 px-3">Date Fin</th>
+                    <th class="py-2 px-3">Statut</th>
+                    <th class="py-2 px-3">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let res of groupe.reservations">
+                    <td class="py-2 px-3">{{ res.client?.nom }} {{ res.client?.prenom }}</td>
+                    <td class="py-2 px-3">{{ res.chambre?.numero }}</td>
+                    <td class="py-2 px-3">{{ res.dateDebut }}</td>
+                    <td class="py-2 px-3">{{ res.dateFin }}</td>
+                    <td class="py-2 px-3">
+                      <span [ngClass]="{
+                        'text-yellow-600': res.statut === 'En attente',
+                        'text-green-600': res.statut === 'Checked-in',
+                        'text-gray-500': res.statut === 'Checked-out'
+                      }">
+                        {{ res.statut }}
+                      </span>
+                    </td>
+                    <td class="py-2 px-3 flex gap-2">
+                      <button class="text-green-600 hover:underline" (click)="checkIn(res)" [disabled]="res.statut !== 'En attente'">Check-In</button>
+                      <button class="text-yellow-600 hover:underline" (click)="checkOut(res)" [disabled]="res.statut !== 'Checked-in'">Check-Out</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+</div>

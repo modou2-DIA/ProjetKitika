@@ -16,7 +16,7 @@ export interface FicheClient {
 
 @Injectable({ providedIn: 'root' })
 export class FicheClientService {
-  private apiUrl = 'http://localhost:8080/api/ficheclients';
+  private apiUrl = 'http://localhost:8080/api/fiches-client';
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<FicheClient[]> {
@@ -26,4 +26,30 @@ export class FicheClientService {
   create(fiche: FicheClient): Observable<FicheClient> {
     return this.http.post<FicheClient>(this.apiUrl, fiche);
   }
+  creerFicheDepuisReservation(reservationId: number): Observable<any> {
+  return this.http.post(`${this.apiUrl}/checkin/${reservationId}`, {});
+}
+checkoutDepuisReservation(reservationId: number): Observable<any> {
+  return this.http.put(`${this.apiUrl}/checkout/${reservationId}`, {});
+}
+
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+  update(fiche: FicheClient): Observable<FicheClient> {
+    return this.http.put<FicheClient>(`${this.apiUrl}/${fiche.id}`, fiche);
+  }
+  getById(id: number): Observable<FicheClient> {
+    return this.http.get<FicheClient>(`${this.apiUrl}/${id}`);
+  }
+  getFicheByReservationId(reservationId: number): Observable<FicheClient> {
+    return this.http.get<FicheClient>(`${this.apiUrl}/reservation/${reservationId}`);
+  }
+  getFichesByClientId(clientId: number): Observable<FicheClient[]> {
+    return this.http.get<FicheClient[]>(`${this.apiUrl}/client/${clientId}`);
+  }
+  creerFicheDepuisReservationGroupee(reservationGroupeeId: number): Observable<FicheClient> {
+    return this.http.post<FicheClient>(`${this.apiUrl}/reservation-groupee/${reservationGroupeeId}`, {});
+  }  
+
 }

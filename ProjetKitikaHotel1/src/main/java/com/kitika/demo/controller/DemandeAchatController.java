@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/demandes")
 public class DemandeAchatController {
@@ -21,7 +22,7 @@ public class DemandeAchatController {
     }
 
     @GetMapping("/{id}")
-    public DemandeAchat getDemandeById(@PathVariable int id) {
+    public DemandeAchat getDemandeById(@PathVariable("id") int id) {
         return demandeAchatService.getDemandeById(id);
     }
 
@@ -31,13 +32,13 @@ public class DemandeAchatController {
     }
 
     @PutMapping("/{id}")
-    public DemandeAchat updateDemande(@PathVariable int id, @RequestBody DemandeAchat demande) {
+    public DemandeAchat updateDemande(@PathVariable("id") int id, @RequestBody DemandeAchat demande) {
         demande.setId(id);
         return demandeAchatService.saveDemande(demande);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteDemande(@PathVariable int id) {
+    public void deleteDemande(@PathVariable("id") int id) {
         demandeAchatService.deleteDemande(id);
     }
 

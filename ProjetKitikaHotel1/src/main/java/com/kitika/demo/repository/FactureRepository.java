@@ -9,4 +9,5 @@ import java.util.List;
 public interface FactureRepository extends JpaRepository<Facture, Integer> {
     List<Facture> findByClientId(int clientId);
     List<Facture> findByPayee(boolean payee);
+    List<Facture> findByReservationId(int reservationId);
 }

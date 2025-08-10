@@ -1,0 +1,14 @@
+<div class="max-w-md mx-auto p-6 bg-white rounded shadow">
+    <h2 class="text-xl mb-4">Créer un compte</h2>
+    <form [formGroup]="f" (ngSubmit)="submit()">
+      <input formControlName="nom" placeholder="Nom" class="w-full mb-2 p-2 border rounded" />
+      <input formControlName="prenom" placeholder="Prénom" class="w-full mb-2 p-2 border rounded" />
+      <input formControlName="email" placeholder="Email" class="w-full mb-2 p-2 border rounded" />
+      <input type="password" formControlName="motDePasse" placeholder="Mot de passe" class="w-full mb-4 p-2 border rounded" />
+      <select formControlName="role" class="w-full mb-4 p-2 border rounded">
+        <option value="RECEPTIONNISTE">RECEPTIONNISTE</option>
+        <option value="ADMIN">ADMIN</option>
+      </select>
+      <button class="bg-green-600 text-white px-4 py-2 rounded">Créer</button>
+    </form>
+  </div>

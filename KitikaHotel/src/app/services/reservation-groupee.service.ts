@@ -32,4 +32,9 @@ export class ReservationGroupeeService {
   getById(id: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/${id}`);
   }
+    // Nouvelle méthode pour ajouter une réservation à un groupe
+  addReservationToGroup(reservationGroupeeId: number, reservationId: number): Observable<any> {
+    const url = `${this.apiUrl}/${reservationGroupeeId}/reservations/${reservationId}`;
+    return this.http.put(url, {});
+  }
 }

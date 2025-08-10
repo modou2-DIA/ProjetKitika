@@ -28,7 +28,7 @@ public class ReservationGroupee {
     private LocalDate dateDebut;
     private LocalDate dateFin;
 
-    @ManyToOne
+   @ManyToOne
     private Client societe; // client principal (société)
 
     @OneToMany(mappedBy = "reservationGroupee", cascade = CascadeType.ALL)

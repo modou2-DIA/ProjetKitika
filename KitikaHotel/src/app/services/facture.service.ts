@@ -25,4 +25,25 @@ export class FactureService {
   create(facture: Facture): Observable<Facture> {
     return this.http.post<Facture>(this.apiUrl, facture);
   }
+  marquerCommePayee(id: number): Observable<any> {
+  return this.http.patch(`${this.apiUrl}/${id}/payer`, null);
+}
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+  genererPDF(id: number): void {
+  const url = `${this.apiUrl}/${id}/pdf`;
+  window.open(url, '_blank');
+}
+genererFactureDepuisReservation(reservationId: number): Observable<Facture> {
+  return this.http.post<Facture>(`${this.apiUrl}/generer/${reservationId}`, {});
+}
+getFactureByReservationId(reservationId: number): Observable<Facture> {
+  return this.http.get<Facture>(`${this.apiUrl}/reservation/${reservationId}`);
+}
+getById(id: number): Observable<Facture> {
+  return this.http.get<Facture>(`${this.apiUrl}/${id}`);
+}
+
+
 }

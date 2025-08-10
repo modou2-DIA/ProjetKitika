@@ -2,6 +2,8 @@ package com.kitika.demo.model;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,6 +30,7 @@ public class Consommation {
 
     @ManyToOne
     @JoinColumn(name = "fiche_id")
+    @JsonIgnore
     private FicheClient client;
     
     @ManyToOne

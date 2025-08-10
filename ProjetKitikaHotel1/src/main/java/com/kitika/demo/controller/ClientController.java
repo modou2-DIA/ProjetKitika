@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kitika.demo.model.Client;
@@ -48,5 +49,15 @@ public class ClientController {
     @DeleteMapping("/{id}")
     public void deleteClient(@PathVariable("id") int id) {
         clientService.deleteClient(id);
+    }
+    @GetMapping("/societes")
+    public List<Client> getSocietes() {
+        return clientService.getSocietes();
+    }
+    @GetMapping("/search")
+    public List<Client> searchClients(@RequestParam(value="nom", required = false) String nom,
+                                      @RequestParam(value="prenom",required = false) String prenom,
+                                      @RequestParam(value="entite",required = false) String entite) {
+        return clientService.searchClients(nom, prenom, entite);
     }
 }

@@ -8,7 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,16 +28,11 @@ public class FicheClient {
         private LocalDate checkin;
         private LocalDate checkout;
 	    
- 
-
-    @ManyToOne
-    private Chambre chambre;
-
-
     private String statut; // En cours, Terminé, Annulé...
 
-	    @OneToOne
-	    @JoinColumn(name = "client_id")
-	    private Client client;
+	 @OneToOne
+    @JoinColumn(name = "reservation_id", nullable = false)
+    private Reservation reservation;
+
 
 }

@@ -1,3 +1,4 @@
+<!-- reservation-modal.component.html -->
 <h2 class="text-xl font-semibold text-gray-800 mb-4">Nouvelle Réservation</h2>
 
 <form [formGroup]="reservationForm" (ngSubmit)="submitReservation()" class="space-y-4">
@@ -10,14 +11,19 @@
     </select>
   </div>
 
-  <div>
-    <label class="block text-sm mb-1">Client</label>
-    <select formControlName="clientId" class="w-full border rounded px-3 py-2">
-      <option *ngFor="let client of clients" [value]="client.id">
-        {{ client.nom }} {{ client.prenom }}
-      </option>
-    </select>
+ <!-- Nouveau client inline -->
+<div class="border p-4 rounded bg-gray-50" >
+  <h3 class="text-sm font-semibold text-gray-600 mb-2">Informations du client</h3>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+    <input formControlName="nom" class="border p-2 rounded" placeholder="Nom" />
+    <input formControlName="prenom" class="border p-2 rounded" placeholder="Prénom" />
+    <input formControlName="telephone" class="border p-2 rounded" placeholder="Téléphone" />
+    <input formControlName="email" class="border p-2 rounded" placeholder="Email" />
+    <input formControlName="nationalite" class="border p-2 rounded" placeholder="Nationalité" />
+    <input formControlName="numeroPieceIdentite" class="border p-2 rounded" placeholder="Numéro PI" />
   </div>
+</div>
+
 
   <div class="grid grid-cols-2 gap-4">
     <div>
@@ -31,7 +37,17 @@
   </div>
 
   <div class="flex justify-end gap-3 mt-4">
-    <button type="button" class="px-4 py-2 bg-gray-300 rounded" (click)="cancel()">Annuler</button>
-    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded" [disabled]="reservationForm.invalid">Réserver</button>
+      <!-- Annuler -->
+    <button type="button"
+            class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition duration-150 ease-in-out"
+            (click)="cancel()">Annuler</button>
+
+    <!-- Réserver -->
+    <button type="submit"
+            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-150 ease-in-out"
+            [disabled]="reservationForm.invalid">
+      Réserver
+    </button>
+
   </div>
 </form>

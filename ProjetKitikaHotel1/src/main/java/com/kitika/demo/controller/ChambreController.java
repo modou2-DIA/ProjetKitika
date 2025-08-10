@@ -22,7 +22,7 @@ public class ChambreController {
     }
 
     @GetMapping("/{id}")
-    public Chambre getChambreById(@PathVariable int id) {
+    public Chambre getChambreById(@PathVariable("id") int id) {
         return chambreService.getChambreById(id);
     }
 
@@ -33,13 +33,13 @@ public class ChambreController {
     }
 
     @PutMapping("/{id}")
-    public Chambre updateChambre(@PathVariable int id, @RequestBody Chambre chambre) {
+    public Chambre updateChambre(@PathVariable("id") int id, @RequestBody Chambre chambre) {
         chambre.setId(id);
         return chambreService.saveChambre(chambre);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteChambre(@PathVariable int id) {
+    public void deleteChambre(@PathVariable("id") int id) {
         chambreService.deleteChambre(id);
     }
 

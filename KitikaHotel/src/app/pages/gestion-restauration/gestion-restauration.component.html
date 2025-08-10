@@ -1,0 +1,114 @@
+
+<div class="container mx-auto px-4 py-6">
+  <h2 class="text-2xl font-bold text-blue-800 mb-6">Gestion de la Restauration</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div class="bg-white p-4 rounded shadow">
+      <h3 class="font-semibold text-lg">Total Ventes Aujourd'hui</h3>
+      <p class="text-2xl text-green-600 mt-2">{{ totalVentes | currency }}</p>
+    </div>
+    <div class="bg-white p-4 rounded shadow">
+      <h3 class="font-semibold text-lg">Commandes par Service</h3>
+      <ul class="mt-2">
+        <li *ngFor="let s of serviceStats">
+          {{ s.service }} : {{ s.total }} commandes
+        </li>
+      </ul>
+    </div>
+    <div class="bg-white p-4 rounded shadow">
+      <h3 class="font-semibold text-lg">Alertes Stock F&B</h3>
+      <p *ngIf="stockAlerts.length === 0">Aucune alerte</p>
+      <ul *ngIf="stockAlerts.length > 0">
+        <li *ngFor="let alert of stockAlerts" class="text-red-600">{{ alert }}</li>
+      </ul>
+    </div>
+  </div>
+  <!-- 🔍 Filtrage par client (fiche client) -->
+  <div class="flex flex-wrap gap-4 mb-4">
+    <select [(ngModel)]="ficheSelectionneeId" (change)="chargerConsommations()" class="border px-3 py-2 rounded">
+      <option *ngFor="let fiche of fichesClients" [value]="fiche.id">
+        {{ fiche.reservation.client.nom }} {{ fiche.reservation.client.prenom }} - Chambre {{ fiche.reservation.chambre.numero }}
+      </option>
+    </select>
+    <button class="bg-blue-600 text-white px-4 py-2 rounded" (click)="ouvrirModalAjout()">+ Ajouter consommation</button>
+  </div>
+
+  <!-- 📊 Tableau des consommations -->
+  <div class="bg-white rounded shadow overflow-x-auto">
+    <table class="min-w-full table-auto">
+      <thead class="bg-gray-100 text-left">
+        <tr>
+          <th class="px-4 py-2">Date</th>
+          <th class="px-4 py-2">Type</th>
+          <th class="px-4 py-2">Produit</th>
+          <th class="px-4 py-2">Montant</th>
+          <th class="px-4 py-2">Description</th>
+          <th class="px-4 py-2">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let c of consommations" class="border-b">
+          <td class="px-4 py-2">{{ c.date }}</td>
+          <td class="px-4 py-2">{{ c.type }}</td>
+          <td class="px-4 py-2">{{ c.produit?.nom }}</td>
+          <td class="px-4 py-2">{{ c.montant | currency:'TND' }}</td>
+          <td class="px-4 py-2">{{ c.description }}</td>
+          <td class="px-4 py-2">
+            <button class="text-red-600 text-sm hover:underline" (click)="supprimerConsommation(c.id)">Supprimer</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+<!-- Modal d'ajout (peut être géré via MatDialog) -->
+<ng-template #modalAjout>
+  <h3 class="text-lg font-semibold mb-4">Ajouter une nouvelle consommation</h3>
+  <form [formGroup]="formConsommation" (ngSubmit)="ajouterConsommation()" class="space-y-6">
+
+    <!-- Champ pour le produit -->
+    <div>
+      <label for="produitSelect" class="block text-sm font-medium text-gray-700 mb-1">
+        Produit / Service
+      </label>
+      <select id="produitSelect" formControlName="produitId" class="w-full border p-2 rounded-md focus:ring focus:ring-blue-500">
+        <option [ngValue]="null" disabled>Sélectionnez un produit</option>
+        <option *ngFor="let produit of produits" [value]="produit.id">
+          {{ produit.nom }} - {{ produit.prix | currency:'TND' }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Champ pour le type de consommation -->
+    <div>
+      <label for="typeInput" class="block text-sm font-medium text-gray-700 mb-1">
+        Type de consommation
+      </label>
+      <input type="text" id="typeInput" formControlName="type" class="w-full border p-2 rounded-md focus:ring focus:ring-blue-500" placeholder="Ex: petit-déjeuner, déjeuner, dîner" />
+    </div>
+
+    <!-- Champ pour la description -->
+    <div>
+      <label for="descriptionInput" class="block text-sm font-medium text-gray-700 mb-1">
+        Description
+      </label>
+      <input type="text" id="descriptionInput" formControlName="description" class="w-full border p-2 rounded-md focus:ring focus:ring-blue-500" placeholder="Détails supplémentaires (facultatif)" />
+    </div>
+
+    <!-- Champ pour le montant -->
+    <div>
+      <label for="montantInput" class="block text-sm font-medium text-gray-700 mb-1">
+        Montant
+      </label>
+      <input type="number" id="montantInput" formControlName="montant" class="w-full border p-2 rounded-md focus:ring focus:ring-blue-500" placeholder="Entrez le montant" />
+    </div>
+
+    <!-- Bouton de soumission -->
+    <div class="text-right">
+      <button type="submit" [disabled]="formConsommation.invalid" class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed">
+        Ajouter
+      </button>
+    </div>
+    
+  </form>
+</ng-template>

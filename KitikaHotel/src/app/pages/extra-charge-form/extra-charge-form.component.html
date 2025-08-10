@@ -1,0 +1,25 @@
+<h2 class="text-xl font-bold mb-4">Ajouter une prestation</h2>
+    <form (ngSubmit)="save()">
+      <div class="mb-3">
+        <label class="block text-sm font-medium">Type</label>
+        <input type="text" [(ngModel)]="charge.type" name="type" required
+               class="border rounded px-3 py-2 w-full" placeholder="Ex: Room service">
+      </div>
+
+      <div class="mb-3">
+        <label class="block text-sm font-medium">Description</label>
+        <textarea [(ngModel)]="charge.description" name="description"
+                  class="border rounded px-3 py-2 w-full" placeholder="Détails..."></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label class="block text-sm font-medium">Montant (€)</label>
+        <input type="number" [(ngModel)]="charge.montant" name="montant" required min="0"
+               class="border rounded px-3 py-2 w-full" placeholder="0.00">
+      </div>
+
+      <div class="flex justify-end gap-2 mt-4">
+        <button type="button" (click)="close()" class="bg-gray-400 text-white px-4 py-2 rounded">Annuler</button>
+        <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Enregistrer</button>
+      </div>
+    </form>

@@ -1,41 +1,76 @@
 <div class="p-6">
-  <h2 class="text-2xl font-bold mb-4 text-gray-800">ÉCONOMA - Gestion du Stock</h2>
+  <h2 class="text-2xl font-bold mb-6 text-blue-800">ÉCONOMA - Gestion du Stock</h2>
 
-  <!-- Alertes seuils critiques -->
-  <div *ngIf="criticalItems.length > 0" class="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded">
-    <h3 class="text-red-600 font-semibold">⚠ Alertes de Stock Critique</h3>
-    <ul class="list-disc pl-6 text-red-800">
-      <li *ngFor="let item of criticalItems">{{ item.nom }} ({{ item.quantite }} restants)</li>
+    <!-- ➕ Bouton d'ajout -->
+  <!-- 🟦 Bouton d'ajout produit -->
+  <div class="mt-4">
+    <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700" (click)="ajouterProduit()">
+      + Ajouter un produit
+    </button>
+  </div>
+
+  <!-- ⚠ Alerte de stock critique -->
+  <div *ngIf="criticalItems.length > 0" class="mb-6 bg-red-100 border-l-4 border-red-500 p-4 rounded">
+    <h3 class="text-red-700 font-semibold mb-2">Produits en Stock Critique</h3>
+    <ul class="list-disc list-inside text-sm text-red-900">
+      <li *ngFor="let item of criticalItems">{{ item.nom }} - {{ item.stock }} en stock</li>
     </ul>
   </div>
 
-  <!-- Tableau du stock actuel -->
-  <div class="bg-white rounded shadow overflow-x-auto">
+  <!-- 📊 Tableau du stock -->
+  <div class="bg-white rounded shadow overflow-x-auto mb-6">
     <table class="min-w-full table-auto">
-      <thead class="bg-gray-100 text-left">
+      <thead class="bg-gray-100">
         <tr>
-          <th class="px-4 py-2">Désignation</th>
-          <th class="px-4 py-2">Catégorie</th>
-          <th class="px-4 py-2">Quantité</th>
-          <th class="px-4 py-2">Seuil Critique</th>
-          <th class="px-4 py-2">Actions</th>
+          <th class="px-4 py-2 text-left">Nom</th>
+          <th class="px-4 py-2 text-left">Type</th>
+          <th class="px-4 py-2 text-left">Stock</th>
+          <th class="px-4 py-2 text-left">Seuil Critique</th>
+          <th class="px-4 py-2 text-left">Prix Unit.</th>
+          <th class="px-4 py-2 text-left">Actions</th>
         </tr>
       </thead>
-      <tbody>
-        <tr *ngFor="let item of stock" class="border-b hover:bg-gray-50">
-          <td class="px-4 py-2">{{ item.nom }}</td>
-          <td class="px-4 py-2">{{ item.categorie }}</td>
-          <td class="px-4 py-2">{{ item.quantite }}</td>
-          <td class="px-4 py-2">{{ item.seuilCritique }}</td>
-          <td class="px-4 py-2">
-            <button (click)="commander(item)" class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1 rounded">
-              Commander
-            </button>
-          </td>
-        </tr>
-      </tbody>
+    <tbody>
+    <tr *ngFor="let produit of stock" class="border-b hover:bg-gray-50">
+      <td class="px-4 py-2">{{ produit.nom }}</td>
+      <td class="px-4 py-2">{{ produit.type }}</td>
+      <td class="px-4 py-2">{{ produit.stock }}</td>
+      <td class="px-4 py-2">{{ produit.seuilCritique }}</td>
+      <td class="px-4 py-2">{{ produit.prixUnitaire }} DT</td>
+      <td class="px-4 py-2 flex gap-2">
+        <button (click)="modifierProduit(produit)" class="bg-yellow-500 hover:bg-yellow-600 text-white text-xs px-3 py-1 rounded">Modifier</button>
+        <button (click)="supprimerProduit(produit.id!)" class="bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1 rounded">Supprimer</button>
+      </td>
+    </tr>
+  </tbody>
     </table>
   </div>
 
-  <!-- Historique ou commande en attente (bonus pour plus tard) -->
+
+<!-- 🟩 Modal produit -->
+<div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white p-6 rounded-lg w-full max-w-xl shadow-lg">
+    <h2 class="text-lg font-semibold text-gray-700 mb-4">
+      {{ isEditMode ? 'Modifier le Produit' : 'Ajouter un Produit' }}
+    </h2>
+
+    <form [formGroup]="form" (ngSubmit)="soumettre()" class="space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input type="text" class="border p-2 rounded" placeholder="Nom" formControlName="nom" />
+        <input type="text" class="border p-2 rounded" placeholder="Catégorie" formControlName="type" />
+        <input type="number" class="border p-2 rounded" placeholder="Quantité en stock" formControlName="stock" />
+        <input type="number" class="border p-2 rounded" placeholder="Seuil critique" formControlName="seuilCritique" />
+        <input type="number" class="border p-2 rounded" placeholder="Prix unitaire (DT)" formControlName="prixUnitaire" />
+      </div>
+
+      <div class="flex justify-end gap-2 mt-4">
+        <button type="button" class="bg-gray-300 text-gray-800 px-4 py-2 rounded" (click)="fermer()">Annuler</button>
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700" [disabled]="form.invalid">
+          {{ isEditMode ? 'Mettre à jour' : 'Ajouter' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
 </div>

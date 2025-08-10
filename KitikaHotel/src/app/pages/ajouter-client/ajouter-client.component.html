@@ -1,0 +1,72 @@
+<div class="p-6 w-full max-w-lg bg-white rounded shadow-lg">
+  <h2 class="text-xl font-semibold text-gray-800 mb-4">Ajouter un Client</h2>
+  <div class="p-6 bg-white rounded shadow max-w-4xl mx-auto overflow-y-auto" style="max-height:80vh;">
+    <form [formGroup]="clientForm" (ngSubmit)="onAjouterClient()" class="space-y-4">
+      
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Nom</mat-label>
+        <input matInput formControlName="nom" required>
+        <mat-error *ngIf="clientForm.get('nom')?.hasError('required')">Le nom est obligatoire</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Prénom</mat-label>
+        <input matInput formControlName="prenom">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Téléphone</mat-label>
+        <input matInput formControlName="telephone" required>
+        <mat-error *ngIf="clientForm.get('telephone')?.hasError('required')">Le téléphone est obligatoire</mat-error>
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" required>
+        <mat-error *ngIf="clientForm.get('email')?.hasError('required')">L'email est obligatoire</mat-error>
+        <mat-error *ngIf="clientForm.get('email')?.hasError('email')">Format d'email invalide</mat-error>
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>N° pièce d'identité</mat-label>
+        <input matInput formControlName="numeroPieceIdentite">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Adresse</mat-label>
+        <input matInput formControlName="adresse">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Nationalité</mat-label>
+        <input matInput formControlName="nationalite">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Type de client</mat-label>
+        <mat-select formControlName="type" required>
+          <mat-option value="particulier">Particulier</mat-option>
+          <mat-option value="societe">Société</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Champ manquant pour la sélection de la chambre -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Chambre</mat-label>
+        <mat-select formControlName="chambreId" required>
+          <mat-option *ngIf="(chambresLibres$ | async) === null">Chargement...</mat-option>
+          <mat-option *ngIf="!(chambresLibres$ | async)?.length">Aucune chambre libre</mat-option>
+          <mat-option *ngFor="let chambre of chambresLibres$ | async" [value]="chambre.id">
+            {{ chambre.numero }} ({{ chambre.type }} - {{ chambre.prixParNuit }} DH)
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="clientForm.get('chambreId')?.hasError('required')">La sélection d'une chambre est obligatoire</mat-error>
+      </mat-form-field>
+
+      <div class="flex justify-end mt-4 gap-3">
+        <button mat-flat-button (click)="onAnnuler()" class="bg-gray-300 rounded">Annuler</button>
+        <button mat-flat-button color="primary" type="submit" [disabled]="clientForm.invalid">Enregistrer</button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -9,5 +9,7 @@ public interface IClientService {
 	public Client getClientById(int id);
 	public Client saveClient(Client client);
 	public void deleteClient(int id);
+	public List<Client> getSocietes();
+	public List<Client> searchClients(String nom, String prenom, String entite);
 
 }

@@ -3,6 +3,7 @@ package com.kitika.demo.service;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.kitika.demo.dto.ConsommationRequestDTO;
 import com.kitika.demo.model.Consommation;
 
 public interface IConsommationService { 
@@ -13,5 +14,6 @@ public interface IConsommationService {
 	 public List<Consommation> getByClient(int clientId);
 	 //public List<Consommation> getByChambre(int chambreId);
 	 public List<Consommation> getByDateRange(LocalDate start, LocalDate end);
+	 public Consommation ajouter( ConsommationRequestDTO dto);
 
 }
