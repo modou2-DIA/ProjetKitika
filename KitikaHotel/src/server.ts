@@ -13,6 +13,17 @@ const browserDistFolder = resolve(serverDistFolder, '../browser');
 
 const app = express();
 const angularApp = new AngularNodeAppEngine();
+export function getPrerenderParams(route: string) {
+  if (route === 'facturation/:id') {
+    return [
+      { id: '1' },
+      { id: '2' },
+      { id: '3' }
+    ]; // liste d’IDs à générer
+  }
+  return [];
+}
+
 
 /**
  * Example Express Rest API endpoints can be defined here.

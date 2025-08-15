@@ -12,6 +12,7 @@ public interface IFicheClientService {
 	 public void deleteFiche(int id) ;
 	 public void creerDepuisReservation(int reservationId);
 	 public void effectuerCheckout(int reservationId);
+	 public FicheClient getFicheByReservationId(int reservationId);
 	 
 
 }

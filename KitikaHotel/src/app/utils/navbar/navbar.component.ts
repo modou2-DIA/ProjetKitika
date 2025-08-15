@@ -1,32 +1,43 @@
 import { Component } from '@angular/core';
-import { ClientsComponent } from '../../pages/clients/clients.component';
-import { DashboardComponent } from '../../pages/dashboard/dashboard.component';
-import { FacturationComponent } from '../../pages/facturation/facturation.component';
-import { RouterLink,RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FormGroup } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
+import { RouterLinkActive, RouterLink } from '@angular/router';
+import { Observable } from 'rxjs'; // Importez Observable
+
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink,RouterLinkActive,CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.scss'
+  styleUrls: ['./navbar.component.scss'],
+  imports: [CommonModule, FormsModule, RouterLinkActive, RouterLink],
+  standalone: true
 })
 export class NavbarComponent {
-    isLoggedIn = false;
+  // Exposez les Observables pour le template
+  public isAuthenticated$: Observable<boolean>;
+  public userRole$: Observable<string | null>;
+  public userName$: Observable<string | null>;
+  showLogoutConfirm = false; // Contrôle du modal
 
-  constructor(private auth: AuthService, private router: Router) {
-    this.isLoggedIn = this.auth.isAuthenticated();
+  constructor(public auth: AuthService, private router: Router) {
+    // Initialisation des Observables du service
+    this.isAuthenticated$ = this.auth.authStatus$;
+    this.userRole$ = this.auth.userRole$;
+    this.userName$ = this.auth.userName$;
+  }
+
+  toggleLogoutConfirm() {
+    this.showLogoutConfirm = !this.showLogoutConfirm;
   }
 
   confirmLogout() {
-    if (confirm("Voulez-vous vraiment vous déconnecter ?")) {
-      this.auth.logout();
-      this.isLoggedIn = false;
-      this.router.navigate(['/login']);
-    }
+    this.auth.logout();
+    this.showLogoutConfirm = false;
+    this.router.navigate(['/']);
   }
 
+  cancelLogout() {
+    this.showLogoutConfirm = false;
+  }
 }

@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 import com.kitika.demo.model.Chambre;
 import com.kitika.demo.model.FicheClient;
 import com.kitika.demo.model.Reservation;
+import com.kitika.demo.repository.ChambreRepository;
 import com.kitika.demo.repository.FicheClientRepository;
 import com.kitika.demo.repository.ReservationRepository;
-import com.kitika.demo.repository.ChambreRepository;
 
 @Service
 public class FicheClientService implements IFicheClientService{
@@ -38,6 +38,11 @@ public class FicheClientService implements IFicheClientService{
     @Override
     public FicheClient saveFiche(FicheClient ficheClient) {
         return ficheClientRepository.save(ficheClient);
+    }
+
+    @Override
+    public FicheClient getFicheByReservationId(int reservationId) {
+        return ficheClientRepository.findByReservationId(reservationId).orElse(null);
     }
 
     @Override
@@ -74,7 +79,8 @@ public void effectuerCheckout(int reservationId) {
     Reservation reservation = reservationRepository.findById(reservationId)
         .orElseThrow(() -> new RuntimeException("Réservation introuvable"));
 
-    FicheClient fiche = ficheClientRepository.findByReservation(reservation);  
+    FicheClient fiche = ficheClientRepository.findByReservationId(reservationId)
+       .orElseThrow(() -> new RuntimeException("Aucune fiche client trouvée pour cette réservation"));
 
 
     if (fiche == null) {

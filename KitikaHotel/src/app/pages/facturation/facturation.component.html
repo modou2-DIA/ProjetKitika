@@ -1,25 +1,27 @@
 <div class="p-6">
-  <!-- Afficher la facture unique si elle existe, sinon le titre standard -->
-  <ng-container *ngIf="factureUnique">
-    <h2 class="text-2xl font-bold mb-6 text-blue-800">Facture N° {{ factureUnique.id }}</h2>
-  </ng-container>
-  <ng-container *ngIf="!factureUnique">
-    <h2 class="text-2xl font-bold mb-6 text-blue-800">Module de Facturation</h2>
-  </ng-container>
+  <!-- Titre et filtres -->
+  <h2 class="text-2xl font-bold mb-6 text-blue-800">Module de Facturation</h2>
 
-  <!-- ⛓️ Barre de recherche et filtres (masquée si une seule facture est affichée) -->
-  <div class="flex flex-wrap gap-4 mb-6" *ngIf="!factureUnique">
-    <input [(ngModel)]="searchClient" type="text" placeholder="Rechercher un client..."
-           class="border border-gray-300 px-3 py-2 rounded shadow-sm w-full md:w-1/3">
+  <!-- Barre de recherche et filtres -->
+  <div class="flex flex-wrap gap-4 mb-6">
+    <input 
+      [(ngModel)]="searchClient" 
+      (ngModelChange)="onFiltreChange()"
+      type="text" 
+      placeholder="Rechercher un client..."
+      class="border border-gray-300 px-3 py-2 rounded shadow-sm w-full md:w-1/3">
 
-    <select [(ngModel)]="filtrePaiement" class="border border-gray-300 px-3 py-2 rounded shadow-sm w-full md:w-1/4">
+    <select 
+      [(ngModel)]="filtrePaiement" 
+      (ngModelChange)="onFiltreChange()"
+      class="border border-gray-300 px-3 py-2 rounded shadow-sm w-full md:w-1/4">
       <option value="">Tous les paiements</option>
       <option value="true">Payées</option>
       <option value="false">Impayées</option>
     </select>
   </div>
 
-  <!-- 📄 Tableau des factures -->
+  <!-- Tableau des factures -->
   <div class="bg-white shadow rounded overflow-x-auto">
     <table class="min-w-full">
       <thead class="bg-gray-100">
@@ -37,7 +39,7 @@
           <td class="px-4 py-2">{{ facture.id }}</td>
           <td class="px-4 py-2">{{ facture.client.nom }} {{ facture.client.prenom }}</td>
           <td class="px-4 py-2">{{ facture.dateEmission }}</td>
-          <td class="px-4 py-2">{{ facture.montantTotal }} $</td>
+          <td class="px-4 py-2">{{ facture.montantTotal }} DT</td>
           <td class="px-4 py-2">
             <span [ngClass]="{
               'text-green-600': facture.payee,

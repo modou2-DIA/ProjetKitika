@@ -1,131 +1,132 @@
 <div class="container mx-auto px-4 py-6">
   <div class="sticky top-0 z-10 bg-white py-4">
-  <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
-    <h2 class="text-2xl font-bold text-blue-800">Liste des Réservations</h2>
-    <div class="flex gap-3 flex-wrap">
-      <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-              (click)="openReservationForm()">
-        + Ajouter une Réservation
-      </button>
-      <button class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
-              [routerLink]="['/gestion-chambres']">
-        🛏️ Gérer les Chambres
-      </button>
-      <button class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
-              [routerLink]="['/gestion-reservation-groupee']">
-        👥 Réservations Groupées
-      </button>
+    <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
+      <h2 class="text-2xl font-bold text-blue-800">Liste des Réservations</h2>
+      <div class="flex gap-3 flex-wrap">
+        <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                (click)="openReservationForm()">
+          + Ajouter une Réservation
+        </button>
+        <button class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+                [routerLink]="['/gestion-chambres']">
+          🛏️ Gérer les Chambres
+        </button>
+        <button class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+                [routerLink]="['/gestion-reservation-groupee']">
+          👥 Réservations Groupées
+        </button>
+      </div>
+    </div>
+
+    <!-- 🔍 Barre de recherche -->
+    <div class="bg-white rounded shadow p-4 mb-6 flex flex-wrap gap-4">
+      <input type="text" [(ngModel)]="searchTerm" (input)="filtrerReservations()"
+             placeholder="Rechercher par client, chambre ou type"
+             class="border border-gray-300 rounded px-3 py-2 w-full md:w-1/3" />
+
+      <select [(ngModel)]="statutFiltre" (change)="filtrerReservations()"
+              class="border border-gray-300 rounded px-3 py-2 w-full md:w-1/4">
+        <option value="">Tous les statuts</option>
+        <option value="Réservée">En attente</option>
+        <option value="Checked-in">Check-in</option>
+        <option value="Check-out">Check-out</option>
+      </select>
     </div>
   </div>
-
-  <!-- 🔍 Barre de recherche -->
-  <div class="bg-white rounded shadow p-4 mb-6 flex flex-wrap gap-4">
-    <input type="text" [(ngModel)]="searchTerm" (input)="filtrerReservations()"
-           placeholder="Rechercher par client, chambre ou type"
-           class="border border-gray-300 rounded px-3 py-2 w-full md:w-1/3" />
-
-    <select [(ngModel)]="statutFiltre" (change)="filtrerReservations()"
-            class="border border-gray-300 rounded px-3 py-2 w-full md:w-1/4">
-      <option value="">Tous les statuts</option>
-      <option value="Réservée">En attente</option>
-      <option value="Checked-in">Check-in</option>
-      <option value="Check-out">Check-out</option>
-    </select>
-  </div>
-</div>
   <!-- 📋 Tableau des réservations -->
-<div class="overflow-x-auto">
-<table class="min-w-full bg-white shadow rounded-lg">
-  <thead class="bg-gray-100">
-    <tr>
-      <th class="py-2 px-4">Client</th>
-      <th class="py-2 px-4">Téléphone</th>
-      <th class="py-2 px-4">Chambre</th>
-      <th class="py-2 px-4">Type</th>
-      <th class="py-2 px-4">Dates</th>
-      <th class="py-2 px-4">Statut</th>
-      <th class="py-2 px-4 text-center">Actions</th>
-    </tr>
-  </thead>
+  <div class="overflow-x-auto">
+    <table class="min-w-full bg-white shadow rounded-lg">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="py-2 px-4">Client</th>
+          <th class="py-2 px-4">Téléphone</th>
+          <th class="py-2 px-4">Chambre</th>
+          <th class="py-2 px-4">Type</th>
+          <th class="py-2 px-4">Dates</th>
+          <th class="py-2 px-4">Statut</th>
+          <th class="py-2 px-4 text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Ajout de la condition ici -->
+        <ng-container *ngFor="let res of reservationsFiltrees">
+          <ng-container *ngIf="res.statut !== 'EN_ATTENTE'">
+            <tr class="border-b hover:bg-gray-50">
+              <td class="py-2 px-4">{{ res.client.nom }} {{ res.client.prenom }}</td>
+              <td class="py-2 px-4">{{ res.client.telephone }}</td>
+              <td class="py-2 px-4">{{ res.chambre.numero }}</td>
+              <td class="py-2 px-4">{{ res.chambre.type }}</td>
+              <td class="py-2 px-4">{{ res.dateDebut }} → {{ res.dateFin }}</td>
+              <td class="py-2 px-4">
+                <span [ngClass]="{
+                  'text-yellow-600 font-semibold': res.statut === 'En attente' || res.statut === 'Réservée',
+                  'text-green-600 font-semibold': res.statut === 'Checked-in',
+                  'text-gray-500': res.statut === 'Check-out'
+                }">
+                  {{ res.statut }}
+                </span>
+              </td>
+              <td class="py-2 px-4 flex flex-wrap gap-2 justify-center">
+                <button *ngIf="res.statut === 'En attente' || res.statut === 'Réservée'"
+                        class="bg-green-500 text-white px-3 py-1 rounded"
+                        (click)="checkIn(res)">Check-In</button>
 
-  <tbody>
-    <ng-container *ngFor="let res of reservationsFiltrees">
-      <!-- Ligne principale réservation -->
-      <tr class="border-b hover:bg-gray-50">
-        <td class="py-2 px-4">{{ res.client.nom }} {{ res.client.prenom }}</td>
-        <td class="py-2 px-4">{{ res.client.telephone }}</td>
-        <td class="py-2 px-4">{{ res.chambre.numero }}</td>
-        <td class="py-2 px-4">{{ res.chambre.type }}</td>
-        <td class="py-2 px-4">{{ res.dateDebut }} → {{ res.dateFin }}</td>
-        <td class="py-2 px-4">
-          <span [ngClass]="{
-            'text-yellow-600 font-semibold': res.statut === 'En attente' || res.statut === 'Réservée',
-            'text-green-600 font-semibold': res.statut === 'Checked-in',
-            'text-gray-500': res.statut === 'Check-out'
-          }">
-            {{ res.statut }}
-          </span>
-        </td>
-        <td class="py-2 px-4 flex flex-wrap gap-2 justify-center">
-          <button *ngIf="res.statut === 'En attente' || res.statut === 'Réservée'"
-                  class="bg-green-500 text-white px-3 py-1 rounded"
-                  (click)="checkIn(res)">Check-In</button>
+                <button *ngIf="res.statut === 'Checked-in'"
+                        class="bg-yellow-500 text-white px-3 py-1 rounded"
+                        (click)="checkOut(res)">Check-Out</button>
 
-          <button *ngIf="res.statut === 'Checked-in'"
-                  class="bg-yellow-500 text-white px-3 py-1 rounded"
-                  (click)="checkOut(res)">Check-Out</button>
+                <button *ngIf="res.statut === 'Check-out'"
+                        class="bg-blue-500 text-white px-3 py-1 rounded"
+                        (click)="consulterFacture(res)">Facture</button>
 
-          <button *ngIf="res.statut === 'Check-out'"
-                  class="bg-blue-500 text-white px-3 py-1 rounded"
-                  (click)="consulterFacture(res)">Facture</button>
+                <button *ngIf="res.statut === 'En attente' || res.statut === 'Réservée'" class="bg-indigo-500 text-white px-3 py-1 rounded"
+                        (click)="envoyerConfirmation(res.id!)">📧 Confirmation</button>
 
-          <button *ngIf="res.statut === 'En attente' || res.statut === 'Réservée' || res.statut === 'EN_ATTENTE'" class="bg-indigo-500 text-white px-3 py-1 rounded"
-                  (click)="envoyerConfirmation(res.id!)">📧 Confirmation</button>
+                <!-- Bouton accordéon -->
+                <button *ngIf="res.statut === 'Checked-in'"
+                        class="bg-purple-500 text-white px-3 py-1 rounded"
+                        (click)="toggleCharges(res.id!)">
+                  {{ chargesVisibles[res.id!] ? 'Masquer prestations' : 'Voir prestations' }}
+                </button>
+              </td>
+            </tr>
 
-          <!-- Bouton accordéon -->
-          <button *ngIf="res.statut === 'Checked-in'"
-                  class="bg-purple-500 text-white px-3 py-1 rounded"
-                  (click)="toggleCharges(res.id!)">
-            {{ chargesVisibles[res.id!] ? 'Masquer prestations' : 'Voir prestations' }}
-          </button>
-        </td>
-      </tr>
+            <!-- Accordéon prestations -->
+            <tr>
+              <td colspan="7" class="p-0">
+                <div class="overflow-hidden transition-all duration-500 ease-in-out"
+                     [ngStyle]="{'max-height': chargesVisibles[res.id!] ? '500px' : '0'}">
+                  <div class="bg-gray-50 p-4">
+                    <table class="w-full border mb-2">
+                      <thead class="bg-gray-100">
+                        <tr>
+                          <th class="px-3 py-2">Type</th>
+                          <th class="px-3 py-2">Description</th>
+                          <th class="px-3 py-2">Montant (€)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let c of chargesParReservation[res.id!]">
+                          <td class="px-3 py-2">{{ c.type }}</td>
+                          <td class="px-3 py-2">{{ c.description }}</td>
+                          <td class="px-3 py-2">{{ c.montant | number: '1.2-2' }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
 
-      <!-- Accordéon prestations -->
-      <tr>
-        <td colspan="7" class="p-0">
-          <div class="overflow-hidden transition-all duration-500 ease-in-out"
-               [ngStyle]="{'max-height': chargesVisibles[res.id!] ? '500px' : '0'}">
-            <div class="bg-gray-50 p-4">
-              <table class="w-full border mb-2">
-                <thead class="bg-gray-100">
-                  <tr>
-                    <th class="px-3 py-2">Type</th>
-                    <th class="px-3 py-2">Description</th>
-                    <th class="px-3 py-2">Montant (€)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let c of chargesParReservation[res.id!]">
-                    <td class="px-3 py-2">{{ c.type }}</td>
-                    <td class="px-3 py-2">{{ c.description }}</td>
-                    <td class="px-3 py-2">{{ c.montant | number: '1.2-2' }}</td>
-                  </tr>
-                </tbody>
-              </table>
+                    <button class="bg-green-600 text-white px-3 py-1 rounded"
+                            (click)="ouvrirFormulaireExtraCharge(res.id!)">
+                      ➕ Ajouter prestation
+                    </button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
+      </tbody>
+    </table>
 
-              <button class="bg-green-600 text-white px-3 py-1 rounded"
-                      (click)="ouvrirFormulaireExtraCharge(res.id!)">
-                ➕ Ajouter prestation
-              </button>
-            </div>
-          </div>
-        </td>
-      </tr>
-    </ng-container>
-  </tbody>
-</table>
-
-  <div *ngIf="reservationsFiltrees.length === 0" class="text-center py-6 text-gray-500">chargement....</div>
-</div>
+    <div *ngIf="reservationsFiltrees.length === 0" class="text-center py-6 text-gray-500">chargement....</div>
+  </div>
 </div>

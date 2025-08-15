@@ -4,7 +4,7 @@ package com.kitika.demo.model;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -48,7 +48,7 @@ public class Facture {
 
      @OneToOne
     @JoinColumn(name = "reservation_id")
-    @JsonIgnore
+   
     private Reservation  reservation;
 
 

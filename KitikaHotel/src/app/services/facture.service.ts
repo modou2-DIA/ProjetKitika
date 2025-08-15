@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Client } from './client.service';
 import { Consommation } from './consommation.service';
+import { Reservation } from './reservation.service';
 export interface Facture {
   id?: number;
   dateEmission: string;
@@ -10,6 +11,7 @@ export interface Facture {
   client: Client;
   consommations: Consommation[];
   payee: boolean;
+  reservation?: Reservation; // Optionnel si la facture est liée à une réservation
 }
  
 
@@ -35,8 +37,8 @@ export class FactureService {
   const url = `${this.apiUrl}/${id}/pdf`;
   window.open(url, '_blank');
 }
-genererFactureDepuisReservation(reservationId: number): Observable<Facture> {
-  return this.http.post<Facture>(`${this.apiUrl}/generer/${reservationId}`, {});
+genererFactureDepuisReservation(ficheId: number): Observable<Facture> {
+  return this.http.post<Facture>(`${this.apiUrl}/generer/${ficheId}`, {});
 }
 getFactureByReservationId(reservationId: number): Observable<Facture> {
   return this.http.get<Facture>(`${this.apiUrl}/reservation/${reservationId}`);

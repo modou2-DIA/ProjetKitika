@@ -1,25 +1,22 @@
- <!-- Top Navigation -->
-  
-            <header class="bg-white shadow-sm">
-                <div class="flex items-center justify-between p-4">
-                    <div class="flex items-center">
-                        <button id="mobileSidebarToggle" class="md:hidden text-gray-600 mr-4">
-                            <i class="fas fa-bars text-xl"></i>
-                        </button>
-                        <h1 class="text-xl font-semibold text-gray-800">Tableau de Bord</h1>
-                    </div>
-                    <div class="flex items-center space-x-4">
-                        <div class="relative">
-                            <button class="text-gray-600 hover:text-gray-900">
-                                <i class="fas fa-bell text-xl"></i>
-                                <span class="notification-dot bg-red-500 rounded-full w-2 h-2"></span>
-                            </button>
-                        </div>
-                        <div class="flex items-center">
-                            <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold">MD</div>
-                            <span class="ml-2 text-gray-700">Modou DIA</span>
-                        </div>
-                    </div>
-                </div>
-            </header>
+<header class="flex items-center justify-between bg-blue-800 text-white p-4 shadow">
+  <div class="flex items-center space-x-3">
+    <i class="fas fa-hotel text-2xl"></i>
+    <span class="text-lg font-bold">Hotel Kitika</span>
+  </div>
 
+  <div class="flex items-center space-x-4 relative">
+    <span class="text-sm">Bonjour, {{ userName || 'Invité' }}</span>
+    <i class="fas fa-user-circle text-2xl cursor-pointer hover:text-gray-300"
+       (click)="toggleLogoutConfirm()"></i>
+
+    <!-- Boîte de confirmation -->
+    <div *ngIf="showLogoutConfirm"
+         class="absolute right-0 top-10 bg-white text-black rounded shadow-lg w-48 p-4 z-50">
+      <p class="text-sm mb-3">Se déconnecter ?</p>
+      <div class="flex justify-end gap-2">
+        <button class="bg-gray-200 px-3 py-1 rounded text-sm" (click)="cancelLogout()">Non</button>
+        <button class="bg-red-500 text-white px-3 py-1 rounded text-sm" (click)="confirmLogout()">Oui</button>
+      </div>
+    </div>
+  </div>
+</header>

@@ -28,6 +28,9 @@ import com.kitika.demo.repository.FactureRepository;
 import com.kitika.demo.service.IFactureService;
 
 import jakarta.servlet.http.HttpServletResponse;
+import com.kitika.demo.model.Article;
+
+import java.time.temporal.ChronoUnit;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -98,9 +101,11 @@ public class FactureController {
         return factureService.getFactureByReservationId(id);
     }
     @GetMapping("/{id}/pdf")
-public void generateFacturePdf(@PathVariable("id") int id, HttpServletResponse response) throws IOException, DocumentException {
-    Facture facture = factureRepo.findById(id)
-        .orElseThrow(() -> new RuntimeException("Facture non trouvée"));
+    public void generateFacturePdf(@PathVariable("id") int id, HttpServletResponse response) throws IOException, DocumentException {
+    Facture facture = factureService.getFactureById(id);
+    if (facture == null) {
+        throw new RuntimeException("Facture non trouvée pour l'ID : " + id);
+    }
 
     response.setContentType("application/pdf");
     response.setHeader("Content-Disposition", "attachment; filename=facture_" + id + ".pdf");
@@ -130,58 +135,67 @@ public void generateFacturePdf(@PathVariable("id") int id, HttpServletResponse r
     document.add(new Paragraph(" "));
 
     // --- Détail Séjour ---
-    if (facture.getReservation() != null) {
-        float prixNuitee = facture.getReservation().getChambre().getPrixParNuit();
-        long nbNuits = java.time.temporal.ChronoUnit.DAYS.between(
-                facture.getReservation().getDateDebut(),
-                facture.getReservation().getDateFin()
-        );
+    document.add(new Paragraph("Détail du séjour :", sectionTitleFont));
+    PdfPTable sejourTable = new PdfPTable(3);
+    sejourTable.setWidthPercentage(100);
+    sejourTable.addCell("Prix/Nuitée");
+    sejourTable.addCell("Nombre de nuits");
+    sejourTable.addCell("Total séjour");
 
-        document.add(new Paragraph("Détail du séjour :", sectionTitleFont));
-        PdfPTable sejourTable = new PdfPTable(3);
-        sejourTable.addCell("Prix/Nuitée");
-        sejourTable.addCell("Nombre de nuits");
-        sejourTable.addCell("Total séjour");
+    long nbNuits = ChronoUnit.DAYS.between(
+            facture.getReservation().getDateDebut(),      
+            facture.getReservation().getDateFin()
+    );
+    float prixNuitee = facture.getReservation().getChambre().getPrixParNuit();
+    float totalSejour = nbNuits * prixNuitee;
 
-        sejourTable.addCell(prixNuitee + " DT");
-        sejourTable.addCell(nbNuits + " nuits");
-        sejourTable.addCell((prixNuitee * nbNuits) + " DT");
+    sejourTable.addCell(String.format("%.2f $", prixNuitee));
+    sejourTable.addCell(String.valueOf(nbNuits) + " nuits");
+    sejourTable.addCell(String.format("%.2f $", totalSejour));
 
-        document.add(sejourTable);
-        document.add(new Paragraph(" "));
-    }
+    document.add(sejourTable);
+    document.add(new Paragraph(" "));
 
     // --- Consommations ---
     document.add(new Paragraph("Détail des consommations :", sectionTitleFont));
-    PdfPTable consoTable = new PdfPTable(3);
-    consoTable.addCell("Produit");
-    consoTable.addCell("Description");
-    consoTable.addCell("Montant");
-
     if (facture.getConsommations() != null && !facture.getConsommations().isEmpty()) {
         for (Consommation conso : facture.getConsommations()) {
-            consoTable.addCell(conso.getProduit().getNom());
-            consoTable.addCell(conso.getDescription());
-            consoTable.addCell(conso.getMontant() + " DT");
+            document.add(new Paragraph("Consommation du : " + conso.getDate(), boldFont));
+            document.add(new Paragraph("Description : " + conso.getDescription(), normalFont));
+            
+            PdfPTable consoTable = new PdfPTable(4);
+            consoTable.setWidthPercentage(100);
+            consoTable.setSpacingBefore(10f);
+            consoTable.setSpacingAfter(10f);
+            consoTable.addCell("Nom de l'article");
+            consoTable.addCell("Quantité");
+            consoTable.addCell("Prix unitaire");
+            consoTable.addCell("Prix total");
+            
+            if (conso.getArticles() != null && !conso.getArticles().isEmpty()) {
+                for (Article article : conso.getArticles()) {
+                    consoTable.addCell(article.getNom());
+                    consoTable.addCell(String.valueOf(article.getQuantite()));
+                    consoTable.addCell(String.format("%.2f $", article.getPrixUnitaire()));
+                    consoTable.addCell(String.format("%.2f $", article.getQuantite()*article.getPrixUnitaire() ));
+                }
+            }
+            document.add(consoTable);
         }
     } else {
-        consoTable.addCell("Aucune");
-        consoTable.addCell("-");
-        consoTable.addCell("0 DT");
+        document.add(new Paragraph("Aucune consommation enregistrée.", normalFont));
     }
-
-    document.add(consoTable);
+    
     document.add(new Paragraph(" "));
+    document.add(new Paragraph("------------------------------------------------------"));
 
     // --- Total ---
-    document.add(new Paragraph("Montant total à payer : " + facture.getMontantTotal() + " DT", boldFont));
+    document.add(new Paragraph("Montant total à payer : " + String.format("%.2f $", facture.getMontantTotal()), boldFont));
     document.add(new Paragraph("Statut : " + (facture.isPayee() ? "Payée ✅" : "Impayée ❌"), boldFont));
     document.add(new Paragraph("------------------------------------------------------"));
     document.add(new Paragraph("Merci pour votre séjour et à bientôt !", normalFont));
 
     document.close();
 }
-
-
 
 }

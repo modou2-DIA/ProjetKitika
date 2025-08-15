@@ -15,7 +15,7 @@ import com.kitika.demo.repository.FicheClientRepository;
 import com.kitika.demo.repository.ConsommationRepository;
 
 @Service
-public class FactureService implements IFactureService{
+public class FactureService implements IFactureService {
 
     @Autowired
     private FactureRepository factureRepository;
@@ -40,10 +40,9 @@ public class FactureService implements IFactureService{
     }
 
     @Override
-   public Facture getFactureByReservationId(int id) {
+    public Facture getFactureByReservationId(int id) {
         return factureRepository.findByReservationId(id).stream().findFirst().orElse(null);
     }
-
 
     @Override
     public void deleteFacture(int id) {
@@ -60,35 +59,46 @@ public class FactureService implements IFactureService{
         return factureRepository.findByPayee(false);
     }
 
-
     @Override
     public List<Facture> getFacturesPayees() {
         return factureRepository.findByPayee(true);
     }
+    
+    /**
+     * Génère une facture pour une fiche client donnée.
+     * Le montant total est la somme des frais d'hébergement et des consommations.
+     * @param ficheId L'identifiant de la fiche client.
+     * @return La facture générée et sauvegardée.
+     */
     @Override
     public Facture genererFacture(int ficheId) {
-    FicheClient fiche = ficheClientRepo.findById(ficheId)
-        .orElseThrow(() -> new RuntimeException("Fiche non trouvée"));
+        FicheClient fiche = ficheClientRepo.findById(ficheId)
+                .orElseThrow(() -> new RuntimeException("Fiche non trouvée"));
 
-    List<Consommation> consoList = consommationRepo.findByClient(fiche);
+        // Récupérer toutes les consommations de la fiche client
+        List<Consommation> consoList = consommationRepo.findByClient(fiche);
 
-    float totalConso = (float) consoList.stream().mapToDouble(Consommation::getMontant).sum();
+        // Calculer le total des consommations en sommant les montants totaux de chaque consommation
+        float totalConso = (float) consoList.stream()
+                                            .mapToDouble(Consommation::getMontantTotal)
+                                            .sum();
 
-    long nbNuits = ChronoUnit.DAYS.between(fiche.getCheckin(), fiche.getCheckout() != null ? fiche.getCheckout() : LocalDate.now());
-    float prixNuitee = fiche.getReservation().getChambre().getPrixParNuit();
-    float totalSejour = nbNuits * prixNuitee;
+        // Calculer le total du séjour (frais d'hébergement)DateDebut
+        long nbNuits = ChronoUnit.DAYS.between(fiche.getReservation().getDateDebut() , fiche.getReservation().getDateFin());
 
+        float prixNuitee = fiche.getReservation().getChambre().getPrixParNuit();
+        float totalSejour = nbNuits * prixNuitee;
 
-    Facture facture = new Facture();
-    facture.setClient(fiche.getReservation().getClient());
-    facture.setConsommations(consoList);
-    facture.setDateEmission(LocalDate.now());
-    facture.setMontantTotal(totalConso + totalSejour);
-    facture.setPayee(false);
-    facture.setReservation(fiche.getReservation()); // Lier la facture à la réservation
+        // Créer la nouvelle facture
+        Facture facture = new Facture();
+        facture.setClient(fiche.getReservation().getClient());
+        facture.setConsommations(consoList);
+        facture.setDateEmission(LocalDate.now());
+        facture.setMontantTotal(totalConso + totalSejour); // Somme des consommations et du séjour
+        facture.setPayee(false);
+        facture.setReservation(fiche.getReservation()); // Lier la facture à la réservation
 
-
-    return factureRepository.save(facture);
-}
-
+        // Sauvegarder la facture dans la base de données
+        return factureRepository.save(facture);
+    }
 }

@@ -28,7 +28,10 @@ public class FicheClientController {
         return ficheClientService.getFicheById(id);
     }
 
-    
+    @GetMapping("/reservation/{reservationId}")
+    public FicheClient getFicheByReservationId(@PathVariable("reservationId") int reservationId) {
+        return ficheClientService.getFicheByReservationId(reservationId);
+    }
 
     @PostMapping
     public FicheClient createFiche(@RequestBody FicheClient ficheClient) {

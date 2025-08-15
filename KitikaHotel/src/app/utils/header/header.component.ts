@@ -1,28 +1,34 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
-
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.scss'
+  styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {
-
-  isLoggedIn = false;
+  userName: string | null = null;
+  showLogoutConfirm = false; // contrôle du modal
 
   constructor(private auth: AuthService, private router: Router) {
-    this.isLoggedIn = this.auth.isAuthenticated();
+    this.userName = this.auth.getUserName(); // méthode à ajouter si pas existante
+  }
+
+  toggleLogoutConfirm() {
+    this.showLogoutConfirm = !this.showLogoutConfirm;
   }
 
   confirmLogout() {
-    if (confirm("Voulez-vous vraiment vous déconnecter ?")) {
-      this.auth.logout();
-      this.isLoggedIn = false;
-      this.router.navigate(['/login']);
-    }
+    this.auth.logout();
+    this.showLogoutConfirm = false;
+    this.router.navigate(['/login']);
+  }
+
+  cancelLogout() {
+    this.showLogoutConfirm = false;
   }
 }

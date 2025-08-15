@@ -9,32 +9,53 @@ import { StockComponent } from './pages/stock/stock.component';
 import { FacturationComponent } from './pages/facturation/facturation.component';
 import { ClientsComponent } from './pages/clients/clients.component';
 import { UtilisateursComponent } from './pages/utilisateurs/utilisateurs.component';
-import { AjouterChambreComponent } from './pages/ajouter-chambre/ajouter-chambre.component';
 import { ReservationGroupeeComponent } from './pages/reservation-groupee/reservation-groupee.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { AuthGuard } from './services/auth.guard';
+import { HomeComponent } from './pages/home/home.component';
+import { GestionRestaurationComponent } from './pages/gestion-restauration/gestion-restauration.component';
+import { FactureDetailsComponent } from './pages/facture-details/facture-details.component';
+
+// Définissez un LayoutComponent pour les routes protégées si vous en avez un
+// import { LayoutComponent } from './layout/layout.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'hebergement', component: HebergementComponent },
-  { path: 'restauration', component: RestaurationComponent },
-  { path: 'stock', component: StockComponent },
-  { path: 'facturation', component: FacturationComponent },
-  { path: 'client', component: ClientsComponent },
-  { path: 'utilisateurs', component: UtilisateursComponent }, 
-   { path: 'add-room', component: AjouterChambreComponent},
-   {path: 'reservation-groupee', component: ReservationGroupeeComponent},
-   {path: 'gestion-chambres', loadComponent: () => import('./pages/gestion-chambres/gestion-chambres.component').then(m => m.GestionChambresComponent)},
-   {path: 'gestion-reservation-groupee', loadComponent: () => import('./pages/gestion-reservation-groupee/gestion-reservation-groupee.component').then(m => m.GestionReservationGroupeeComponent)},
-   {path:'gestion-restauration', loadComponent: () => import('./pages/gestion-restauration/gestion-restauration.component').then(m => m.GestionRestaurationComponent)},
-   { path: 'facturation/:id', component: FacturationComponent },
-   {path: 'guest-list', loadComponent: () => import('./pages/guest-list/guest-list.component').then(m => m.GuestListComponent)},
-   {path: 'client-search', loadComponent: () => import('./pages/client-search/client-search.component').then(m => m.ClientSearchComponent)},
-   {path:'login', loadComponent: () => import('./auth/login/login.component').then(m => m.LoginComponent)},
-   {path:'register', loadComponent: () => import('./auth/register/register.component').then(m => m.RegisterComponent),canActivate: [AuthGuard]},
-  { path: '**', component: NotFoundComponent } // Page 404
+  { path: 'login', loadComponent: () => import('./auth/login/login.component').then(m => m.LoginComponent) },
+  { path: 'register', loadComponent: () => import('./auth/register/register.component').then(m => m.RegisterComponent), canActivate: [AuthGuard], data: { role: 'admin' } },
+    { path: '', component: HomeComponent },
+  // Routes protégées par l'AuthGuard
+  {
+    path: '',
+    // La route principale (avec LayoutComponent si vous en avez un)
+    // component: LayoutComponent,
+    canActivate: [AuthGuard],
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: DashboardComponent },
+
+      // Réceptionniste
+      { path: 'hebergement', component: HebergementComponent, data: { role: 'RECEPTIONNISTE' } },
+      { path: 'restauration', component: GestionRestaurationComponent, data: { role: 'RECEPTIONNISTE' } },
+      { path: 'stock', component: StockComponent, data: { role: 'RECEPTIONNISTE' } },
+      { path: 'facturation', component: FacturationComponent, data: { role: 'RECEPTIONNISTE' } },
+      { path: 'reservation-groupee', component: ReservationGroupeeComponent, data: { role: 'RECEPTIONNISTE' } },
+      { path: 'gestion-chambres', loadComponent: () => import('./pages/gestion-chambres/gestion-chambres.component').then(m => m.GestionChambresComponent), data: { role: 'RECEPTIONNISTE' } },
+      { path: 'gestion-reservation-groupee', loadComponent: () => import('./pages/gestion-reservation-groupee/gestion-reservation-groupee.component').then(m => m.GestionReservationGroupeeComponent), data: { role: 'RECEPTIONNISTE' } },
+      { path: 'guest-list', loadComponent: () => import('./pages/guest-list/guest-list.component').then(m => m.GuestListComponent), data: { role: 'RECEPTIONNISTE' } },
+      { path: 'client-search', loadComponent: () => import('./pages/client-search/client-search.component').then(m => m.ClientSearchComponent), data: { role: 'RECEPTIONNISTE' } },
+      {path:'facturation/:id', component: FactureDetailsComponent, data: { renderMode: 'client',role: 'RECEPTIONNISTE' } },
+
+      // Admin
+      { path: 'client', component: ClientsComponent, data: { role: 'ADMIN' } },
+      { path: 'utilisateurs', component: UtilisateursComponent, data: { role: 'ADMIN' } },
+      { path: 'audit-log', loadComponent: () => import('./admin/audit-log/audit-log.component').then(m => m.AuditLogComponent), data: { role: 'ADMIN' } }
+    ]
+  },
+  
+  // Route 404 (non trouvée)
+  { path: '**', component: NotFoundComponent }
 ];
+
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

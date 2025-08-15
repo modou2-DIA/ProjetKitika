@@ -3,15 +3,19 @@ package com.kitika.demo.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.kitika.demo.dto.LoginRequest;
+import com.kitika.demo.dto.LoginResponse;
 import com.kitika.demo.model.Utilisateur;
 import com.kitika.demo.repository.UtilisateurRepository;
 import com.kitika.demo.security.JwtService;
-import com.kitika.demo.dto.LoginRequest;
-import com.kitika.demo.dto.LoginResponse;
 
-import java.util.Optional;
+
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController

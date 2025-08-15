@@ -2,13 +2,14 @@ package com.kitika.demo.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import java.util.List;
+
 
 @Getter
 @Setter
 public class ConsommationRequestDTO {
+      private int ficheId;
     private String type;
     private String description;
-    private float montant;
-    private int ficheId;
-    private int produitId;
+    private List<ArticleRequestDTO> articles;
 }

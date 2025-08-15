@@ -1,5 +1,6 @@
 <!-- Sidebar -->
 <div class="sidebar bg-blue-800 text-white w-64 flex-shrink-0">
+  <!-- Logo -->
   <div class="p-4 flex items-center justify-between border-b border-blue-700">
     <div class="flex items-center space-x-2">
       <i class="fas fa-hotel text-2xl"></i>
@@ -15,86 +16,69 @@
     <div class="mb-6">
       <div class="text-xs uppercase font-semibold text-blue-300 mb-2">Menu Principal</div>
       <ul>
-        <li class="mb-1">
+        <li *ngIf="(isAuthenticated$ | async)">
           <a routerLink="/dashboard" routerLinkActive="bg-blue-700"
             class="flex items-center p-2 rounded hover:bg-blue-700">
-            <i class="fas fa-tachometer-alt mr-3"></i>
-            <span>Dashboard</span>
-          </a>
-        </li>
-        <li class="mb-1">
-          <a routerLink="/hebergement" routerLinkActive="bg-blue-700"
-            class="flex items-center p-2 rounded hover:bg-blue-700">
-            <i class="fas fa-bed mr-3"></i>
-            <span>Hébergement</span>
-          </a>
-        </li>
-        <li class="mb-1">
-          <a routerLink="/gestion-restauration" routerLinkActive="bg-blue-700"
-            class="flex items-center p-2 rounded hover:bg-blue-700">
-            <i class="fas fa-utensils mr-3"></i>
-            <span>Restauration</span>
-          </a>
-        </li>
-        <li class="mb-1">
-          <a routerLink="/stock" routerLinkActive="bg-blue-700"
-            class="flex items-center p-2 rounded hover:bg-blue-700">
-            <i class="fas fa-boxes mr-3"></i>
-            <span>Stock</span>
-          </a>
-        </li>
-        <li class="mb-1">
-          <a routerLink="/facturation" routerLinkActive="bg-blue-700"
-            class="flex items-center p-2 rounded hover:bg-blue-700">
-            <i class="fas fa-file-invoice-dollar mr-3"></i>
-            <span>Facturation</span>
+            <i class="fas fa-tachometer-alt mr-3"></i> <span>Dashboard</span>
           </a>
         </li>
       </ul>
     </div>
 
-    <!-- Administration -->
-    <div class="mb-6">
+    <!-- Section Réceptionniste -->
+    <div class="mb-6" *ngIf="(userRole$ | async) === 'RECEPTIONNISTE'">
+      <div class="text-xs uppercase font-semibold text-blue-300 mb-2">Réception</div>
+      <ul>
+        <li><a routerLink="/hebergement" routerLinkActive="bg-blue-700" class="flex items-center p-2 rounded hover:bg-blue-700"><i class="fas fa-bed mr-3"></i><span>Hébergement</span></a></li>
+        <li><a routerLink="/guest-list" routerLinkActive="bg-blue-700" class="flex items-center p-2 rounded hover:bg-blue-700"><i class="fas fa-address-book mr-3"></i><span>Liste invités</span></a></li>
+      
+        <li><a routerLink="/restauration" routerLinkActive="bg-blue-700" class="flex items-center p-2 rounded hover:bg-blue-700"><i class="fas fa-utensils mr-3"></i><span>Restauration</span></a></li>
+        
+        <li><a routerLink="/facturation" routerLinkActive="bg-blue-700" class="flex items-center p-2 rounded hover:bg-blue-700"><i class="fas fa-file-invoice-dollar mr-3"></i><span>Facturation</span></a></li>
+        
+        
+        <li><a routerLink="/gestion-reservation-groupee" routerLinkActive="bg-blue-700" class="flex items-center p-2 rounded hover:bg-blue-700"><i class="fas fa-users mr-3"></i><span>Réservations groupées</span></a></li>
+        <li><a routerLink="/stock" routerLinkActive="bg-blue-700" class="flex items-center p-2 rounded hover:bg-blue-700"><i class="fas fa-boxes mr-3"></i><span>Stock</span></a></li>
+        
+        <li><a routerLink="/gestion-chambres" routerLinkActive="bg-blue-700" class="flex items-center p-2 rounded hover:bg-blue-700"><i class="fas fa-door-closed mr-3"></i><span>Gestion Chambres</span></a></li>
+        
+      </ul>
+    </div>
+
+    <!-- Section Admin -->
+    <div class="mb-6" *ngIf="(userRole$ | async) === 'ADMIN'">
       <div class="text-xs uppercase font-semibold text-blue-300 mb-2">Administration</div>
       <ul>
-        <li class="mb-1">
-          <a routerLink="/client" routerLinkActive="bg-blue-700"
-            class="flex items-center p-2 rounded hover:bg-blue-700">
-            <i class="fas fa-users mr-3"></i>
-            <span>Clients</span>
-          </a>
-        </li>
-        <li class="mb-1">
-          <a routerLink="/utilisateurs" routerLinkActive="bg-blue-700"
-            class="flex items-center p-2 rounded hover:bg-blue-700">
-            <i class="fas fa-user-shield mr-3"></i>
-            <span>Utilisateurs</span>
-          </a>
-        </li>
-        <li class="mb-1">
-          <a href="#" class="flex items-center p-2 rounded hover:bg-blue-700">
-            <i class="fas fa-cog mr-3"></i>
-            <span>Paramètres</span>
-          </a>
-        </li>
+        <li><a routerLink="/client" routerLinkActive="bg-blue-700" class="flex items-center p-2 rounded hover:bg-blue-700"><i class="fas fa-users mr-3"></i><span>Clients</span></a></li>
+        <li><a routerLink="/utilisateurs" routerLinkActive="bg-blue-700" class="flex items-center p-2 rounded hover:bg-blue-700"><i class="fas fa-user-shield mr-3"></i><span>Utilisateurs</span></a></li>
+        <li><a routerLink="/audit-log" routerLinkActive="bg-blue-700" class="flex items-center p-2 rounded hover:bg-blue-700"><i class="fas fa-clipboard-list mr-3"></i><span>Historique</span></a></li>
       </ul>
     </div>
 
     <!-- Connexion / Profil -->
     <div class="border-t border-blue-700 pt-4">
-      <button *ngIf="isLoggedIn; else loginBtn"
-        class="flex items-center p-2 rounded hover:bg-red-700 w-full text-left"
-        (click)="confirmLogout()">
-        <i class="fas fa-user-circle mr-3"></i>
-        <span>Profil (Déconnexion)</span>
-      </button>
-
+      <ng-container *ngIf="(isAuthenticated$ | async); else loginBtn">
+        <button class="flex items-center p-2 rounded hover:bg-red-700 w-full text-left" (click)="toggleLogoutConfirm()">
+          <i class="fas fa-user-circle mr-3"></i>
+          <span>{{ (userName$ | async) }} (Déconnexion)</span>
+        </button>
+      </ng-container>
       <ng-template #loginBtn>
         <a routerLink="/login" class="flex items-center p-2 rounded hover:bg-green-700">
-          <i class="fas fa-sign-in-alt mr-3"></i>
-          <span>Se connecter</span>
+          <i class="fas fa-sign-in-alt mr-3"></i><span>Se connecter</span>
         </a>
       </ng-template>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de confirmation de déconnexion -->
+<div *ngIf="showLogoutConfirm" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+  <div class="bg-white text-black rounded-lg shadow-lg w-80 p-6">
+    <p class="text-lg font-semibold mb-4">Se déconnecter ?</p>
+    <div class="flex justify-end gap-3">
+      <button class="bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300" (click)="cancelLogout()">Non</button>
+      <button class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700" (click)="confirmLogout()">Oui</button>
     </div>
   </div>
 </div>

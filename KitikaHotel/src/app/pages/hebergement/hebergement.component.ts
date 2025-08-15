@@ -109,39 +109,52 @@ checkOut(res: Reservation): void {
   const confirmDialog = this.dialog.open(ConfirmationDialogComponent, {
     width: '400px',
     data: {
-      title: "Confirmation",
-      message: `Voulez-vous vraiment effectuer le check-out de ${res.client?.nom} ?`
+      title: "Confirmation du Check-out",
+      message: `Voulez-vous vraiment effectuer le check-out de ${res.client?.nom} ? Cette action générera la facture.`
     }
   });
 
   confirmDialog.afterClosed().subscribe(result => {
     if (result === true && res.id) {
-      this.ficheClientService.checkoutDepuisReservation(res.id).subscribe({
-        next: () => {
-          // Checkout réussi ✅
-          this.showSuccessModal(`Check-out effectué pour ${res.client?.nom}.`);
+      // 1. Récupère la FicheClient associée à la réservation
+      this.ficheClientService.getFicheByReservationId(res.id).subscribe({
+        next: (ficheClient) => {
+          if (ficheClient && ficheClient.id) {
+            // 2. Si la fiche est trouvée, on effectue le check-out via la FicheClient
+            this.ficheClientService.checkoutDepuisReservation(ficheClient.id).subscribe({
+              next: () => {
+                this.showSuccessModal(`Check-out effectué pour ${res.client?.nom}.`);
 
-          // On tente la génération de facture, mais ce n'est pas bloquant
-          this.factureService.genererFactureDepuisReservation(res.id!).subscribe({
-            next: () => {
-              this.showSuccessModal("Facture générée avec succès.");
-              this.chargerReservations();
-            },
-            error: () => {
-              this.showErrorModal(
-                "⚠️ Facture non générée automatiquement. Veuillez la créer manuellement."
-              );
-              this.chargerReservations();
-            }
-          });
+                // 3. Appelle la génération de la facture avec l'ID de la FicheClient
+                this.factureService.genererFactureDepuisReservation(ficheClient.id!).subscribe({
+                  next: () => {
+                    this.showSuccessModal("Facture générée avec succès.");
+                    this.chargerReservations(); // Recharge les données après succès
+                  },
+                  error: () => {
+                    this.showErrorModal(
+                      "⚠️ Facture non générée automatiquement. Veuillez la créer manuellement."
+                    );
+                    this.chargerReservations(); // Recharge les données même en cas d'échec de la facture
+                  }
+                });
+              },
+              error: () => {
+                this.showErrorModal("Erreur lors du Check-out. Le statut n'a pas été modifié.");
+              }
+            });
+          } else {
+            this.showErrorModal("Fiche client non trouvée. Impossible de procéder au check-out et à la facturation.");
+          }
         },
         error: () => {
-          this.showErrorModal("Erreur lors du Check-Out. Le statut n'a pas été modifié.");
+          this.showErrorModal("Erreur lors de la récupération de la fiche client.");
         }
       });
     }
   });
 }
+
 
 
   // Nouvelle méthode pour consulter la facture

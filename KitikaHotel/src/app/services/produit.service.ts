@@ -13,7 +13,7 @@ export interface Produit {
 
 @Injectable({ providedIn: 'root' })
 export class ProduitService {
-  private apiUrl = 'http://localhost:8080/api/produits';
+  private apiUrl = 'http://localhost:8080/api/articles';
   constructor(private http: HttpClient) {}
 
  getAll(): Observable<Produit[]> {

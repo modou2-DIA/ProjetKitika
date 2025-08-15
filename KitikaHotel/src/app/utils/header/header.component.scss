@@ -1,0 +1,11 @@
+header {
+  position: relative;
+}
+
+i.fas.fa-user-circle {
+  transition: color 0.2s;
+}
+
+i.fas.fa-user-circle:hover {
+  color: #d1d5db; // gris clair
+}

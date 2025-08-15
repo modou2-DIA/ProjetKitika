@@ -1,0 +1,66 @@
+<div class="p-6 max-w-6xl mx-auto bg-white rounded shadow">
+  <h2 class="text-2xl font-semibold mb-4">Historique des actions (Mouchard)</h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-5 gap-3 mb-4">
+    <div>
+      <label class="block text-xs text-gray-600">Du</label>
+      <input type="date" [(ngModel)]="from" class="border rounded px-2 py-1 w-full" />
+    </div>
+    <div>
+      <label class="block text-xs text-gray-600">Au</label>
+      <input type="date" [(ngModel)]="to" class="border rounded px-2 py-1 w-full" />
+    </div>
+    <div>
+      <label class="block text-xs text-gray-600">Action</label>
+      <input type="text" [(ngModel)]="action" placeholder="CREATE / UPDATE / CHECKIN ..." class="border rounded px-2 py-1 w-full" />
+    </div>
+    <div>
+      <label class="block text-xs text-gray-600">Table</label>
+      <input type="text" [(ngModel)]="tableName" placeholder="Reservation, Facture..." class="border rounded px-2 py-1 w-full" />
+    </div>
+    <div>
+      <label class="block text-xs text-gray-600">Utilisateur</label>
+      <input type="text" [(ngModel)]="utilisateur" placeholder="login / nom" class="border rounded px-2 py-1 w-full" />
+    </div>
+  </div>
+
+  <div class="flex gap-2 mb-4">
+    <button class="bg-blue-600 text-white px-4 py-2 rounded" (click)="load()">Filtrer</button>
+    <button class="border px-3 py-2 rounded" (click)="clearFilters()">Réinitialiser</button>
+  </div>
+
+  <div *ngIf="loading" class="mb-4 text-sm text-gray-600">Chargement…</div>
+
+  <div class="overflow-x-auto">
+    <table class="w-full table-auto">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="px-3 py-2 text-left">Date</th>
+          <th class="px-3 py-2 text-left">Utilisateur</th>
+          <th class="px-3 py-2 text-left">Action</th>
+          <th class="px-3 py-2 text-left">Table</th>
+          <th class="px-3 py-2 text-left">Record</th>
+          <th class="px-3 py-2 text-left">Détails</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let l of logs">
+          <td class="px-3 py-2">{{ l.dateHeure | date:'short' }}</td>
+          <td class="px-3 py-2">{{ l.utilisateur }}</td>
+          <td class="px-3 py-2 font-medium">{{ l.action }}</td>
+          <td class="px-3 py-2">{{ l.tableName }}</td>
+          <td class="px-3 py-2">{{ l.recordId }}</td>
+          <td class="px-3 py-2 break-words max-w-xl text-sm text-gray-700">{{ l.details }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="flex justify-between items-center mt-4">
+    <div class="text-sm text-gray-600">Total : {{ total }}</div>
+    <div class="flex gap-2">
+      <button class="px-3 py-1 border rounded" (click)="prev()">Précédent</button>
+      <button class="px-3 py-1 border rounded" (click)="next()">Suivant</button>
+    </div>
+  </div>
+</div>

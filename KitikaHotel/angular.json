@@ -15,35 +15,47 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
-          "options": {
-            "outputPath": "dist/kitika-hotel",
-            "index": "src/index.html",
-            "browser": "src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
-            "tsConfig": "tsconfig.app.json",
-            "inlineStyleLanguage": "scss",
-            "assets": [
+        "builder": "@angular-devkit/build-angular:application",
+        "options": {
+          "outputPath": "dist/kitika-hotel",
+          "index": "src/index.html",
+          "browser": "src/main.ts",
+          "polyfills": ["zone.js"],
+          "tsConfig": "tsconfig.app.json",
+          "inlineStyleLanguage": "scss",
+          "assets": [
+            {
+              "glob": "**/*",
+              "input": "public"
+            }
+          ],
+          "styles": [
+            "@angular/material/prebuilt-themes/azure-blue.css",
+            "src/styles.scss"
+          ],
+          "scripts": [],
+          "baseHref": "/KitikaHotel/"
+        },
+        "configurations": {
+          "production": {
+            "budgets": [
               {
-                "glob": "**/*",
-                "input": "public"
+                "type": "initial",
+                "maximumWarning": "500kB",
+                "maximumError": "1MB"
+              },
+              {
+                "type": "anyComponentStyle",
+                "maximumWarning": "4kB",
+                "maximumError": "8kB"
               }
             ],
-            "styles": [
-              "@angular/material/prebuilt-themes/azure-blue.css",
-              "src/styles.scss"
-            ],
-            "scripts": [],
-            "server": "src/main.server.ts",
-            "outputMode": "server",
-            "ssr": {
-              "entry": "src/server.ts"
-            }
+            "outputHashing": "all"
           },
-          "configurations": {
-            "production": {
+          "ghpages": {
+              "browser": "src/main.csr.ts",
+              "outputPath": "dist/kitika-hotel",
+              "baseHref": "https://modou2-DIA.github.io/ProjetKitika/",
               "budgets": [
                 {
                   "type": "initial",
@@ -58,14 +70,27 @@
               ],
               "outputHashing": "all"
             },
-            "development": {
-              "optimization": false,
-              "extractLicenses": false,
-              "sourceMap": true
-            }
-          },
-          "defaultConfiguration": "production"
+          "development": {
+            "optimization": false,
+            "extractLicenses": false,
+            "sourceMap": true
+          }
         },
+        "defaultConfiguration": "production"
+      },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "tsconfig.app.json",
+              "tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+,
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {

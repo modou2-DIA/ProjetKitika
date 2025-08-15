@@ -1,0 +1,39 @@
+<div class="h-screen flex flex-col justify-center items-center bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300 p-4">
+  <div class="text-center">
+    <!-- Image et titre dynamique -->
+    <i class="fas fa-hotel text-6xl md:text-8xl text-blue-600 mb-4 animate-bounce"></i>
+    <h1 class="text-3xl md:text-5xl font-extrabold mb-2">Bienvenue sur Hotel Kitika</h1>
+    
+    <!-- Message de bienvenue dynamique -->
+    <p class="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8">
+      <ng-container *ngIf="(isAuthenticated$ | async) as isAuthenticated; else notAuthenticated">
+        <span class="font-semibold text-blue-700 dark:text-blue-300">
+          Ravi de vous revoir, {{ (userName$ | async) }}!
+        </span>
+        Commencez à gérer votre hôtel en toute simplicité.
+      </ng-container>
+      <ng-template #notAuthenticated>
+        La solution de gestion hôtelière complète et intuitive.
+        Connectez-vous pour accéder à votre tableau de bord.
+      </ng-template>
+    </p>
+
+    <!-- Boutons d'action dynamiques -->
+    <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+      <button 
+        *ngIf="(isAuthenticated$ | async)"
+        (click)="navigateToDashboard()"
+        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transform transition-transform duration-300 ease-in-out hover:scale-105"
+      >
+        Aller au tableau de bord
+      </button>
+      <button 
+        *ngIf="!(isAuthenticated$ | async)"
+        (click)="navigateToLogin()"
+        class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transform transition-transform duration-300 ease-in-out hover:scale-105"
+      >
+        Se connecter
+      </button>
+    </div>
+  </div>
+</div>

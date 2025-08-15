@@ -1,8 +1,8 @@
-
 <div class="container mx-auto px-4 py-6">
-  <h2 class="text-2xl font-bold text-blue-800 mb-6">Gestion de la Restauration</h2>
+  <h2 class="text-2xl font-bold text-blue-800 mb-6">Gestion de la Restauration </h2>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+  <!-- Bloc de statistiques -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
     <div class="bg-white p-4 rounded shadow">
       <h3 class="font-semibold text-lg">Total Ventes Aujourd'hui</h3>
       <p class="text-2xl text-green-600 mt-2">{{ totalVentes | currency }}</p>
@@ -23,7 +23,8 @@
       </ul>
     </div>
   </div>
-  <!-- 🔍 Filtrage par client (fiche client) -->
+
+  <!-- 🔍 Filtrage et ajout -->
   <div class="flex flex-wrap gap-4 mb-4">
     <select [(ngModel)]="ficheSelectionneeId" (change)="chargerConsommations()" class="border px-3 py-2 rounded">
       <option *ngFor="let fiche of fichesClients" [value]="fiche.id">
@@ -39,76 +40,103 @@
       <thead class="bg-gray-100 text-left">
         <tr>
           <th class="px-4 py-2">Date</th>
-          <th class="px-4 py-2">Type</th>
-          <th class="px-4 py-2">Produit</th>
-          <th class="px-4 py-2">Montant</th>
-          <th class="px-4 py-2">Description</th>
-          <th class="px-4 py-2">Actions</th>
+          <th class="px-4 py-2">Type de consommation</th>
+          <th class="px-4 py-2">Montant Total</th>
+          <th class="px-4 py-2 text-center">Actions</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let c of consommations" class="border-b">
-          <td class="px-4 py-2">{{ c.date }}</td>
-          <td class="px-4 py-2">{{ c.type }}</td>
-          <td class="px-4 py-2">{{ c.produit?.nom }}</td>
-          <td class="px-4 py-2">{{ c.montant | currency:'TND' }}</td>
-          <td class="px-4 py-2">{{ c.description }}</td>
-          <td class="px-4 py-2">
-            <button class="text-red-600 text-sm hover:underline" (click)="supprimerConsommation(c.id)">Supprimer</button>
+          <td class="px-4 py-2">{{ c.date | date: 'dd/MM/yyyy' }}</td>
+          <td class="px-4 py-2">{{ c.description || 'N/A' }}</td>
+          <td class="px-4 py-2 font-semibold">{{ c.montantTotal | currency:'$' }}</td>
+          <td class="px-4 py-2 text-center">
+            <button class="text-blue-600 text-sm hover:underline mr-2" (click)="ouvrirModalDetails(c)">
+              <i class="fas fa-eye"></i> Voir
+            </button>
+            <button class="text-yellow-600 text-sm hover:underline mr-2" (click)="modifierConsommation(c)">
+              <i class="fas fa-edit"></i> Modifier
+            </button>
+            <button class="text-red-600 text-sm hover:underline" (click)="supprimerConsommation(c.id!)">
+              <i class="fas fa-trash"></i> Supprimer
+            </button>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
 
-<!-- Modal d'ajout (peut être géré via MatDialog) -->
-<ng-template #modalAjout>
-  <h3 class="text-lg font-semibold mb-4">Ajouter une nouvelle consommation</h3>
-  <form [formGroup]="formConsommation" (ngSubmit)="ajouterConsommation()" class="space-y-6">
+  <!-- Modal pour l'ajout/modification (réutilisé) -->
+  <ng-template #modalAjout>
+    <h3 class="text-lg font-semibold mb-4">Ajouter une nouvelle consommation</h3>
+    <form [formGroup]="formConsommation" (ngSubmit)="ajouterConsommation()" class="space-y-6">
+      <div>
+        <label for="descriptionInput" class="block text-sm font-medium text-gray-700 mb-1">
+          Description
+        </label>
+        <input type="text" id="descriptionInput" formControlName="description" class="w-full border p-2 rounded-md focus:ring focus:ring-blue-500" placeholder="Détails supplémentaires (facultatif)" />
+      </div>
 
-    <!-- Champ pour le produit -->
-    <div>
-      <label for="produitSelect" class="block text-sm font-medium text-gray-700 mb-1">
-        Produit / Service
-      </label>
-      <select id="produitSelect" formControlName="produitId" class="w-full border p-2 rounded-md focus:ring focus:ring-blue-500">
-        <option [ngValue]="null" disabled>Sélectionnez un produit</option>
-        <option *ngFor="let produit of produits" [value]="produit.id">
-          {{ produit.nom }} - {{ produit.prix | currency:'TND' }}
-        </option>
-      </select>
-    </div>
+      <div formArrayName="articles">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Articles commandés</label>
+        <div *ngFor="let article of articlesFormArray.controls; let i = index" [formGroupName]="i" class="flex gap-2 mb-2">
+          <select formControlName="produitId" class="w-2/3 border p-2 rounded-md focus:ring focus:ring-blue-500">
+            <option [ngValue]="null" disabled>Sélectionnez un produit</option>
+            <option *ngFor="let produit of produits" [value]="produit.id">
+              {{ produit.nom }}
+            </option>
+          </select>
+          <input type="number" formControlName="quantite" class="w-1/3 border p-2 rounded-md focus:ring focus:ring-blue-500" placeholder="Quantité" />
+          <button type="button" (click)="supprimerLigneArticle(i)" *ngIf="articlesFormArray.controls.length > 1" class="text-red-500 hover:text-red-700">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+        <button type="button" (click)="ajouterLigneArticle()" class="text-blue-600 hover:underline mt-2 flex items-center gap-1">
+          <i class="fas fa-plus-circle"></i> Ajouter un article
+        </button>
+      </div>
 
-    <!-- Champ pour le type de consommation -->
-    <div>
-      <label for="typeInput" class="block text-sm font-medium text-gray-700 mb-1">
-        Type de consommation
-      </label>
-      <input type="text" id="typeInput" formControlName="type" class="w-full border p-2 rounded-md focus:ring focus:ring-blue-500" placeholder="Ex: petit-déjeuner, déjeuner, dîner" />
-    </div>
+      <div class="text-right">
+        <button type="submit" [disabled]="formConsommation.invalid" class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed">
+          Ajouter la consommation
+        </button>
+      </div>
+    </form>
+  </ng-template>
 
-    <!-- Champ pour la description -->
-    <div>
-      <label for="descriptionInput" class="block text-sm font-medium text-gray-700 mb-1">
-        Description
-      </label>
-      <input type="text" id="descriptionInput" formControlName="description" class="w-full border p-2 rounded-md focus:ring focus:ring-blue-500" placeholder="Détails supplémentaires (facultatif)" />
+  <!-- Modal pour l'affichage des détails (nouveau) -->
+  <ng-template #modalDetailsConsommation>
+    <div class="bg-white rounded-lg shadow-xl p-6">
+      <h3 class="text-xl font-bold text-gray-800 mb-4">Détails de la consommation</h3>
+      <p class="text-sm text-gray-600 mb-2">Date: {{ consommationDetaillee?.date | date:'dd/MM/yyyy HH:mm' }}</p>
+      <p class="text-sm text-gray-600 mb-4">Description: {{ consommationDetaillee?.description || 'N/A' }}</p>
+      
+      <table class="w-full text-sm mb-4">
+        <thead>
+          <tr class="bg-gray-100">
+            <th class="p-2 text-left text-gray-600">Article</th>
+            <th class="p-2 text-right text-gray-600">Quantité</th>
+            <th class="p-2 text-right text-gray-600">Prix unitaire</th>
+            <th class="p-2 text-right text-gray-600">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let article of consommationDetaillee?.articles" class="border-b">
+            <td class="p-2">{{ article.produit?.nom }}</td>
+            <td class="p-2 text-right">{{ article.quantite }}</td>
+            <td class="p-2 text-right">{{ article.produit?.prix | currency:'TND' }}</td>
+            <td class="p-2 text-right">{{ article.prixTotal | currency:'TND' }}</td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <div class="text-right mt-4">
+        <p class="text-lg font-bold text-gray-800">Total de la consommation: {{ consommationDetaillee?.montantTotal | currency:'TND' }}</p>
+      </div>
+      <div class="text-right mt-6">
+        <button class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600" (click)="fermerModalDetails()">Fermer</button>
+      </div>
     </div>
+  </ng-template>
 
-    <!-- Champ pour le montant -->
-    <div>
-      <label for="montantInput" class="block text-sm font-medium text-gray-700 mb-1">
-        Montant
-      </label>
-      <input type="number" id="montantInput" formControlName="montant" class="w-full border p-2 rounded-md focus:ring focus:ring-blue-500" placeholder="Entrez le montant" />
-    </div>
-
-    <!-- Bouton de soumission -->
-    <div class="text-right">
-      <button type="submit" [disabled]="formConsommation.invalid" class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed">
-        Ajouter
-      </button>
-    </div>
-    
-  </form>
-</ng-template>
+</div>

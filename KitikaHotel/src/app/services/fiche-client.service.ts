@@ -3,15 +3,17 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Client } from './client.service';
 import { ChambreService, Chambre } from './chambre.service';
+import { Reservation } from './reservation.service';
 // --- FicheClientService ---
 export interface FicheClient {
   id?: number;
   note: string;
   checkin: string;
   checkout: string;
-  chambre: Chambre;
+
   statut: string;
-  client: Client;
+
+  reservation:Reservation;
 }
 
 @Injectable({ providedIn: 'root' })
