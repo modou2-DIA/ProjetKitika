@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormGroup } from '@angular/forms';
+import { API } from '../../services/api';
 @Component({
   selector: 'app-register',
   imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule],
@@ -15,6 +16,9 @@ import { FormGroup } from '@angular/forms';
 })
 export class RegisterComponent {
   f!: FormGroup;
+  //private apiUrl = 'http://localhost:8080/api/auth/register';
+  // Utilisez l'API constante pour la version distante
+  private apiUrl = API + 'auth/register';
    ngOnInit() {
      this.f = this.fb.group({
     nom: ['', Validators.required],
@@ -28,7 +32,7 @@ export class RegisterComponent {
   constructor(private fb: FormBuilder, private http: HttpClient) {}
   submit() {
     if (this.f.invalid) return;
-    this.http.post('http://localhost:8080/api/auth/register', this.f.value).subscribe({
+    this.http.post(this.apiUrl, this.f.value).subscribe({
       next: () => alert('Compte créé'),
       error: () => alert('Erreur')
     });
