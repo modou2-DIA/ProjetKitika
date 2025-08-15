@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+import { API } from './api';
 export interface Produit {
   id: number;
   nom: string;
@@ -44,7 +44,9 @@ export interface CreateConsommationDto {
 })
 export class ConsommationService {
 
-  private apiUrl = 'http://localhost:8080/api/consommations';
+  //private apiUrl = 'http://localhost:8080/api/consommations';
+  // Utilisez l'API constante pour la version distante
+   private apiUrl = API + 'consommations';
 
   constructor(private http: HttpClient) {}
 

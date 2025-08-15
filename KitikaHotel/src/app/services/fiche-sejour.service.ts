@@ -6,6 +6,7 @@ import { Produit } from './produit.service';
 import { Consommation } from './consommation.service';
 import { Client } from './client.service';
 import { Chambre } from './chambre.service';
+import { API } from './api';
 
 // Interface pour la fiche de séjour
 export interface FicheSejour {

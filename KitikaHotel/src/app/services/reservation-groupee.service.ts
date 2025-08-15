@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Client } from './client.service';
 import { Reservation } from './reservation.service';
 import { Facture } from './facture.service';
+import { API } from './api';
 export interface ReservationGroupee {
   id?: number;
   nomGroupe: string;
@@ -17,7 +18,9 @@ export interface ReservationGroupee {
   providedIn: 'root'
 })
 export class ReservationGroupeeService {
-  private apiUrl = 'http://localhost:8080/api/reservations-groupees';
+  //private apiUrl = 'http://localhost:8080/api/reservations-groupees';
+  // Utilisez l'API constante pour la version distante
+   private apiUrl = API + 'reservations-groupees';
 
   constructor(private http: HttpClient) {}
 

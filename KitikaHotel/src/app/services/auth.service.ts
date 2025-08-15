@@ -2,10 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-
+import { API } from './api';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  api = 'http://localhost:8080/api/auth';
+  //api = 'http://localhost:8080/api/auth';
+  // Utilisez l'API constante pour la version distante
+   api = API + 'auth';
   
   // Utilisez des BehaviorSubject pour la réactivité
   private _isAuthenticated = new BehaviorSubject<boolean>(false);

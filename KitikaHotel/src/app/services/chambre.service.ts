@@ -6,7 +6,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+import { API } from './api'; // Assurez-vous que le chemin est correct
 export interface Chambre {
   id?: number;
   numero: string;
@@ -18,7 +18,9 @@ export interface Chambre {
 
 @Injectable({ providedIn: 'root' })
 export class ChambreService {
-  private apiUrl = 'http://localhost:8080/api/chambres';
+  //private apiUrl = 'http://localhost:8080/api/chambres';
+  // Utilisez l'API constante pour la version distante
+   private apiUrl = API + 'chambres';
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Chambre[]> {

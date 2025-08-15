@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { API } from './api';
 
 export interface ExtraCharge {
   id?: number;
@@ -11,7 +12,9 @@ export interface ExtraCharge {
 
 @Injectable({ providedIn: 'root' })
 export class ExtraChargeService {
-  private apiUrl = 'http://localhost:8080/api/extra-charges';
+  //private apiUrl = 'http://localhost:8080/api/extra-charges';
+  // Utilisez l'API constante pour la version distante
+   private apiUrl = API + 'extra-charges';
 
   constructor(private http: HttpClient) {}
 

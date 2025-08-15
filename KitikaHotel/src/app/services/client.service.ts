@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { API } from './api';
 // --- ClientService ---
 export interface Client {
   id?: number;
@@ -17,7 +18,9 @@ export interface Client {
 
 @Injectable({ providedIn: 'root' })
 export class ClientService {
-  private apiUrl = 'http://localhost:8080/api/clients';
+  //private apiUrl = 'http://localhost:8080/api/clients';
+  // Utilisez l'API constante pour la version distante
+   private apiUrl = API + 'clients';
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Client[]> {

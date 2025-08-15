@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { ChambreService, Chambre } from './chambre.service';
 import { ClientService, Client } from './client.service';
 import { Utilisateur } from './utilisateur.service'; // Assurez-vous que ce service est défini
+import { API } from './api';
 // --- ReservationService ---
 export interface Reservation {
   id?: number;
@@ -18,7 +19,9 @@ export interface Reservation {
 
 @Injectable({ providedIn: 'root' })
 export class ReservationService {
-  private apiUrl = 'http://localhost:8080/api/reservations';
+  //private apiUrl = 'http://localhost:8080/api/reservations';
+  // Utilisez l'API constante pour la version distante
+   private apiUrl = API + 'reservations';
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Reservation[]> {

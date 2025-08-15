@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+import { API } from './api';
 export interface ReservationGuestDTO {
   reservationId?: number;
   clientId?: number;
@@ -24,7 +24,9 @@ export interface GuestListResponse {
 
 @Injectable({ providedIn: 'root' })
 export class GuestListService {
-  private apiUrl = 'http://localhost:8080/api/guest-list';
+  //private apiUrl = 'http://localhost:8080/api/guest-list';
+  // Utilisez l'API constante pour la version distante
+   private apiUrl = API + 'guest-list';
 
   constructor(private http: HttpClient) {}
 
