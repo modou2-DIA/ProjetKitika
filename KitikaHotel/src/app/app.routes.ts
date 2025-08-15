@@ -21,7 +21,7 @@ import { FactureDetailsComponent } from './pages/facture-details/facture-details
 
 export const routes: Routes = [
   { path: 'login', loadComponent: () => import('./auth/login/login.component').then(m => m.LoginComponent) },
-  { path: 'register', loadComponent: () => import('./auth/register/register.component').then(m => m.RegisterComponent), canActivate: [AuthGuard], data: { role: 'admin' } },
+  { path: 'register', loadComponent: () => import('./auth/register/register.component').then(m => m.RegisterComponent) },
     { path: '', component: HomeComponent },
   // Routes protégées par l'AuthGuard
   {
