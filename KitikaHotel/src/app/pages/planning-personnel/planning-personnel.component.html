@@ -1,0 +1,28 @@
+<div class="p-6">
+  <h2 class="text-2xl font-bold mb-4 flex items-center">
+    <i class="fas fa-calendar-check mr-3"></i> Planning du Personnel
+  </h2>
+
+  <table class="min-w-full border border-gray-300 rounded-lg shadow">
+    <thead class="bg-blue-600 text-white">
+      <tr>
+        <th class="p-3 text-left">Nom</th>
+        <th class="p-3 text-left">Rôle</th>
+        <th class="p-3 text-left">Shift</th>
+        <th class="p-3 text-left">Statut</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of planning" class="border-b hover:bg-gray-100">
+        <td class="p-3">{{ p.nom }}</td>
+        <td class="p-3">{{ p.role }}</td>
+        <td class="p-3">{{ p.shift }}</td>
+        <td class="p-3">
+          <span class="px-3 py-1 rounded text-white" [ngClass]="getBadgeColor(p.status)">
+            {{ p.status }}
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

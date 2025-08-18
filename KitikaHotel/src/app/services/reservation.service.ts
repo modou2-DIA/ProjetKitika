@@ -1,27 +1,28 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'; 
 import { Observable } from 'rxjs'; 
-import { ChambreService, Chambre } from './chambre.service';
-import { ClientService, Client } from './client.service';
-import { Utilisateur } from './utilisateur.service'; // Assurez-vous que ce service est défini
+import { Reservation } from '../models/reservation.model';
+import { Chambre } from '../models/chambre.model';
 import { API } from './api';
 // --- ReservationService ---
-export interface Reservation {
-  id?: number;
+
+export interface ReservationSmartPayload {
+  chambreId: number;
   dateDebut: string;
   dateFin: string;
-  statut: string;
-  total: number;
-  client: Client;
-  chambre: Chambre;
-  receptionniste?: Utilisateur| null;
+  clientId?: number;
+  nom?: string;
+  prenom?: string;
+  telephone?: string;
+  email?: string;
+  nationalite?: string;
+  numeroPieceIdentite?: string;
 }
-
 @Injectable({ providedIn: 'root' })
 export class ReservationService {
-  //private apiUrl = 'http://localhost:8080/api/reservations';
+  private apiUrl = 'http://localhost:8080/api/reservations';
   // Utilisez l'API constante pour la version distante
-   private apiUrl = API + 'reservations';
+   //private apiUrl = API + 'reservations';
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Reservation[]> {
@@ -70,6 +71,9 @@ export class ReservationService {
   envoyerConfirmation(id: number) {
   return this.http.post(`http://localhost:8080/api/reservations/${id}/envoyer-confirmation`, {});
 }
+creerReservationSmart(payload: ReservationSmartPayload) {
+    return this.http.post<Reservation>(`${this.apiUrl}/smart`, payload);
+  }
 
 
 }

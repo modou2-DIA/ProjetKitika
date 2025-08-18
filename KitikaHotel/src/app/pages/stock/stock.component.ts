@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProduitService, Produit } from '../../services/produit.service';
+import { ProduitService} from '../../services/produit.service';
+import { Produit } from '../../models/produit.model';
 import { FormsModule } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';

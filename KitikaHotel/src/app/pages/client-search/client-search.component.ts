@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { ClientService, Client } from '../../services/client.service';
+import { ClientService } from '../../services/client.service';
 import { debounceTime, switchMap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { Client } from '../../models/client.model';
 @Component({
   selector: 'app-client-search',
   templateUrl: './client-search.component.html',

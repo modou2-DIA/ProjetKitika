@@ -1,27 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Client } from './client.service';
-import { ChambreService, Chambre } from './chambre.service';
-import { Reservation } from './reservation.service';
+
+import { FicheClient } from '../models/fiche-client.model';
 import { API } from './api';
 // --- FicheClientService ---
-export interface FicheClient {
-  id?: number;
-  note: string;
-  checkin: string;
-  checkout: string;
 
-  statut: string;
-
-  reservation:Reservation;
-}
 
 @Injectable({ providedIn: 'root' })
 export class FicheClientService {
-  //private apiUrl = 'http://localhost:8080/api/fiches-client';
+  private apiUrl = 'http://localhost:8080/api/fiches-client';
   // Utilisez l'API constante pour la version distante
-  private apiUrl = API + 'fiches-client';
+  //private apiUrl = API + 'fiches-client';
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<FicheClient[]> {

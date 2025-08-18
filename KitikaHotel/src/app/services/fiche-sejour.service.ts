@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Reservation } from './reservation.service';
-import { Produit } from './produit.service';
-import { Consommation } from './consommation.service';
-import { Client } from './client.service';
-import { Chambre } from './chambre.service';
+
+
+import { Consommation } from '../models/consommation.model';
 import { API } from './api';
+import { Reservation } from '../models/reservation.model';
+
 
 // Interface pour la fiche de séjour
 export interface FicheSejour {

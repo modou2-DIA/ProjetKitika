@@ -1,0 +1,42 @@
+{
+
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": false,
+    "strings": true
+  },
+  "editor.suggestOnTriggerCharacters": true,
+  "editor.tabCompletion": "on",
+  "editor.parameterHints.enabled": true,
+  "editor.wordBasedSuggestions": true,
+  "editor.snippetSuggestions": "inline",
+
+ 
+  "editor.acceptSuggestionOnEnter": "smart",
+  "editor.autoClosingBrackets": "always",
+  "editor.autoClosingQuotes": "always",
+  "editor.autoSurround": "languageDefined",
+
+ 
+  "editor.formatOnType": true,
+  "editor.formatOnSave": true,
+
+
+  "eslint.enable": true,
+  "eslint.run": "onSave",
+  "eslint.validate": ["javascript", "typescript"],
+
+
+  "workbench.colorTheme": "Default Dark+",
+  "editor.fontSize": 10,
+  "editor.fontFamily": "Fira Code, Consolas, 'Courier New', monospace",
+  "editor.fontLigatures": true,
+
+  // 🧩 Extensions recommandées
+  "extensions.ignoreRecommendations": false,
+
+
+
+  // 🧪 Expérimental (si tu veux tester TabNine ou autre)
+  "tabnine.experimentalAutoImports": true
+}

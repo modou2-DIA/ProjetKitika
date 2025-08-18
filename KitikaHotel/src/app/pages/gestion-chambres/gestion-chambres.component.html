@@ -1,148 +1,138 @@
-<div class="container mx-auto px-4 py-6">
-  <!-- Bouton retour en haut à gauche -->
-  <div class="mb-2">
-    <a (click)="retour()" class="flex items-center text-blue-700 hover:text-blue-900 cursor-pointer w-fit">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-      </svg>
-      Retour
-    </a>
-  </div>
+<div class="min-h-screen bg-gray-50 px-4 py-6">
+  <!-- Bouton retour -->
 
-  <h2 class="text-2xl font-bold text-blue-800 mb-6">Gestion des Chambres</h2>
 
-  <!-- Barre de recherche et bouton -->
-  <div class="flex flex-wrap gap-4 items-center mb-6">
-    <input type="text" [(ngModel)]="searchTerm" (input)="filtrerChambres()" placeholder="Rechercher par numéro ou type"
-      class="border px-3 py-2 rounded w-full md:w-1/3" />
+  <!-- Titre -->
+  <h2 class="text-3xl font-bold text-blue-800 mb-8">Gestion des Chambres</h2>
 
-    <select [(ngModel)]="filtreType" (change)="filtrerChambres()"
-      class="border px-3 py-2 rounded w-full md:w-1/4">
+  <!-- Barre de recherche et filtres -->
+  <div class="flex flex-wrap gap-4 items-center mb-8">
+    <input
+      type="text"
+      [(ngModel)]="searchTerm"
+      (input)="filtrerChambres()"
+      placeholder="🔍 Rechercher par numéro ou type"
+      class="border px-4 py-2 rounded-lg w-full md:w-1/3 shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
+    />
+
+    <select
+      [(ngModel)]="filtreType"
+      (change)="filtrerChambres()"
+      class="border px-4 py-2 rounded-lg w-full md:w-1/4 shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
+    >
       <option value="">Tous les types</option>
-      <option value="Simple">Simple</option>
-      <option value="Double">Double</option>
+      <option value="Excecutive">Excecutive</option>
+      <option value="Standard">Standard</option>
       <option value="Suite">Suite</option>
     </select>
 
-    <button (click)="openModalAjout()"
-      class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-      + Ajouter une Chambre
+    <button
+      (click)="openModalAjout()"
+      class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition shadow"
+    >
+      <i class="fas fa-plus mr-2"></i> Ajouter une Chambre
     </button>
   </div>
-</div>
 
   <!-- Tableau des chambres -->
-  <div class="overflow-x-auto">
-    <table class="min-w-full bg-white shadow rounded-lg">
-      <thead class="bg-gray-100">
+  <div class="overflow-x-auto bg-white rounded-lg shadow">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-blue-50 text-blue-800">
         <tr>
-          <th class="py-2 px-4 text-left">Numéro</th>
-          <th class="py-2 px-4 text-left">Type</th>
-          <th class="py-2 px-4 text-left">Prix/Nuit</th>
-          <th class="py-2 px-4 text-left">Statut</th>
-          <th class="py-2 px-4 text-left">Hors Service</th>
-          <th class="py-2 px-4 text-left">Actions</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold">Numéro</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold">Type</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold">Prix/Nuit</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold">Statut</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold">Hors Service</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold">Actions</th>
         </tr>
       </thead>
-      <tbody>
-        <tr *ngFor="let chambre of chambresFiltrees" class="border-b hover:bg-gray-50">
-          <td class="py-2 px-4">{{ chambre.numero }}</td>
-          <td class="py-2 px-4">{{ chambre.type }}</td>
-          <td class="py-2 px-4">{{ chambre.prixParNuit }} TND</td>
-          <td class="py-2 px-4">{{ chambre.statut }}</td>
-          <td class="py-2 px-4">{{ chambre.horsService ? 'Oui' : 'Non' }}</td>
-          <td class="py-2 px-4">
-           
-            <button (click)="openModalEdition(chambre)" class="text-indigo-600 hover:underline">Modifier</button>
-
-        </td>
+      <tbody class="divide-y divide-gray-100">
+        <tr *ngFor="let chambre of chambresFiltrees" class="hover:bg-gray-50 transition">
+          <td class="px-6 py-4">{{ chambre.numero }}</td>
+          <td class="px-6 py-4">{{ chambre.type }}</td>
+          <td class="px-6 py-4">{{ chambre.prixParNuit }} $</td>
+          <td class="px-6 py-4">{{ chambre.statut }}</td>
+          <td class="px-6 py-4">
+            <span [ngClass]="chambre.horsService ? 'text-red-600' : 'text-green-600'">
+              {{ chambre.horsService ? 'Oui' : 'Non' }}
+            </span>
+          </td>
+          <td class="px-6 py-4">
+            <button
+              (click)="openModalEdition(chambre)"
+              class="text-indigo-600 hover:underline font-medium"
+            >
+              Modifier
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
   </div>
 
+  <!-- Modal Chambre -->
+  <ng-template #modalChambre>
+    <div class="p-6">
+      <h3 class="text-xl font-semibold text-gray-800 mb-4">
+        {{ isEditing ? 'Modifier une Chambre' : 'Ajouter une Chambre' }}
+      </h3>
 
-<ng-template #modalChambre>
-  <h3 class="text-lg font-semibold text-gray-700 mb-4">
-    {{ isEditing ? 'Modifier une Chambre' : 'Ajouter une Chambre' }}
-  </h3>
+      <form [formGroup]="chambreForm" (ngSubmit)="soumettreChambre()" class="space-y-5">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Numéro</label>
+          <input
+            formControlName="numero"
+            type="text"
+            placeholder="Ex : 101"
+            class="w-full border px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+          />
+        </div>
 
-  <form [formGroup]="chambreForm" (ngSubmit)="soumettreChambre()" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Type</label>
+          <select
+            formControlName="type"
+            class="w-full border px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+          >
+            <option value="">-- Sélectionner un type --</option>
+            <option value="Simple">Simple</option>
+            <option value="Double">Double</option>
+            <option value="Suite">Suite</option>
+          </select>
+        </div>
 
-    <!-- Numéro de chambre -->
-    <div>
-      <label for="numero" class="block text-sm font-medium text-gray-700 mb-1">
-        Numéro de la chambre
-      </label>
-      <input 
-        id="numero" 
-        formControlName="numero" 
-        type="text"
-        placeholder="Ex : 101"
-        class="w-full border px-3 py-2 rounded focus:outline-none focus:ring focus:ring-blue-200"
-      />
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Prix par nuit (DT)</label>
+          <input
+            type="number"
+            formControlName="prixParNuit"
+            placeholder="Ex : 150"
+            class="w-full border px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+          />
+        </div>
+
+        <div class="flex items-center">
+          <input type="checkbox" formControlName="horsService" class="mr-2" />
+          <label class="text-sm text-gray-700">Chambre hors service</label>
+        </div>
+
+        <div class="pt-4 border-t flex justify-end gap-3">
+          <button
+            type="button"
+            (click)="annuler()"
+            class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+          >
+            Annuler
+          </button>
+          <button
+            type="submit"
+            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Enregistrer
+          </button>
+        </div>
+      </form>
     </div>
-
-    <!-- Type de chambre -->
-    <div>
-      <label for="type" class="block text-sm font-medium text-gray-700 mb-1">
-        Type de chambre
-      </label>
-      <select 
-        id="type" 
-        formControlName="type" 
-        class="w-full border px-3 py-2 rounded focus:outline-none focus:ring focus:ring-blue-200"
-      >
-        <option value="">-- Sélectionner un type --</option>
-        <option value="Simple">Simple</option>
-        <option value="Double">Double</option>
-        <option value="Suite">Suite</option>
-      </select>
-    </div>
-
-    <!-- Prix par nuit -->
-    <div>
-      <label for="prixParNuit" class="block text-sm font-medium text-gray-700 mb-1">
-        Prix par nuit (DT)
-      </label>
-      <input 
-        id="prixParNuit" 
-        type="number" 
-        formControlName="prixParNuit" 
-        placeholder="Ex : 150" 
-        class="w-full border px-3 py-2 rounded focus:outline-none focus:ring focus:ring-blue-200"
-      />
-    </div>
-
-    <!-- Hors service -->
-    <div class="flex items-center">
-      <input 
-        id="horsService" 
-        type="checkbox" 
-        formControlName="horsService" 
-        class="mr-2"
-      />
-      <label for="horsService" class="text-sm text-gray-700">
-        Chambre hors service (indisponible à la réservation)
-      </label>
-    </div>
-
-    <!-- Actions -->
-    <div class="text-right space-x-2 pt-4 border-t">
-      <button 
-        type="button" 
-        (click)="annuler()" 
-        class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
-      >
-        Annuler
-      </button>
-      <button 
-        type="submit" 
-        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-      >
-        Enregistrer
-      </button>
-    </div>
-
-  </form>
-</ng-template>
+  </ng-template>
+</div>

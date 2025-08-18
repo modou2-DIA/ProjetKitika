@@ -1,0 +1,27 @@
+<div class="p-4">
+  <h2 class="text-xl font-bold mb-4">Gestion des réservations</h2>
+
+  <table class="table-auto w-full border">
+    <thead>
+      <tr class="bg-gray-200">
+        <th class="px-4 py-2">Client</th>
+        <th class="px-4 py-2">Chambre</th>
+        <th class="px-4 py-2">Dates</th>
+        <th class="px-4 py-2">Statut</th>
+        <th class="px-4 py-2">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let r of reservations">
+        <td class="border px-4 py-2">{{ r.client }}</td>
+        <td class="border px-4 py-2">{{ r.chambre }}</td>
+        <td class="border px-4 py-2">{{ r.dateDebut }} → {{ r.dateFin }}</td>
+        <td class="border px-4 py-2">{{ r.statut }}</td>
+        <td class="border px-4 py-2">
+          <button class="bg-green-500 text-white px-2 py-1 rounded" (click)="changerStatut(r, 'VALIDEE')">Valider</button>
+          <button class="bg-red-500 text-white px-2 py-1 rounded" (click)="changerStatut(r, 'ANNULEE')">Annuler</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

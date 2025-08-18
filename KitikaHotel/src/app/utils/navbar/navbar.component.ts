@@ -5,26 +5,29 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLinkActive, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs'; // Importez Observable
-
+import { RouterOutlet } from '@angular/router';
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
-  imports: [CommonModule, FormsModule, RouterLinkActive, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLinkActive, RouterLink,RouterOutlet],
   standalone: true
 })
 export class NavbarComponent {
-  // Exposez les Observables pour le template
   public isAuthenticated$: Observable<boolean>;
   public userRole$: Observable<string | null>;
   public userName$: Observable<string | null>;
-  showLogoutConfirm = false; // Contrôle du modal
+  public showLogoutConfirm = false;
+  public sidebarOpen = false;
 
   constructor(public auth: AuthService, private router: Router) {
-    // Initialisation des Observables du service
     this.isAuthenticated$ = this.auth.authStatus$;
     this.userRole$ = this.auth.userRole$;
     this.userName$ = this.auth.userName$;
+  }
+
+  toggleSidebar() {
+    this.sidebarOpen = !this.sidebarOpen;
   }
 
   toggleLogoutConfirm() {

@@ -5,8 +5,9 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AjouterClientComponent } from '../ajouter-client/ajouter-client.component';
 import { ReservationGroupeeService, ReservationGroupee as ReservationGroupeeOriginal } from '../../services/reservation-groupee.service';
-import { Reservation as ReservationOriginal } from '../../services/reservation.service';
+
 import { FicheClientService } from '../../services/fiche-client.service';
+import { Reservation as ReservationOriginal} from '../../models/reservation.model';
 
 import { ReservationGroupeeComponent } from '../reservation-groupee/reservation-groupee.component';
 import { FicheSejourComponent } from '../fiche-sejour/fiche-sejour.component';

@@ -1,31 +1,65 @@
-<!-- reservation-modal.component.html -->
 <h2 class="text-xl font-semibold text-gray-800 mb-4">Nouvelle Réservation</h2>
 
 <form [formGroup]="reservationForm" (ngSubmit)="submitReservation()" class="space-y-4">
+
+  <!-- Chambre -->
   <div>
     <label class="block text-sm mb-1">Chambre</label>
     <select formControlName="chambreId" class="w-full border rounded px-3 py-2">
+      <option value="" disabled>-- Sélectionner --</option>
       <option *ngFor="let chambre of chambresDispo" [value]="chambre.id">
-        Chambre {{ chambre.numero }} - {{ chambre.type }}
+        Chambre {{ chambre.numero }} — {{ chambre.type }}
       </option>
     </select>
   </div>
 
- <!-- Nouveau client inline -->
-<div class="border p-4 rounded bg-gray-50" >
-  <h3 class="text-sm font-semibold text-gray-600 mb-2">Informations du client</h3>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-    <input formControlName="nom" class="border p-2 rounded" placeholder="Nom" />
-    <input formControlName="prenom" class="border p-2 rounded" placeholder="Prénom" />
-    <input formControlName="telephone" class="border p-2 rounded" placeholder="Téléphone" />
-    <input formControlName="email" class="border p-2 rounded" placeholder="Email" />
-    <input formControlName="nationalite" class="border p-2 rounded" placeholder="Nationalité" />
-    <input formControlName="numeroPieceIdentite" class="border p-2 rounded" placeholder="Numéro PI" />
+  <!-- Sélecteur client existant -->
+  <div class="border rounded p-4 bg-gray-50">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="text-sm font-semibold text-gray-700">Client</h3>
+      <button type="button"
+              class="text-xs underline"
+              *ngIf="isExistingClient()"
+              (click)="clearMatchedClient()">
+        Changer (client nouveau)
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <!-- Choisir client existant -->
+      <div class="md:col-span-2">
+        <label class="block text-xs text-gray-500 mb-1">Client existant</label>
+      <select class="w-full border rounded px-3 py-2"
+        [ngModel]="matchedClient()?.id || ''"
+        (ngModelChange)="chooseExisting($event)">
+        <option value="">— Aucun (client nouveau) —</option>
+        <option *ngFor="let c of clients" [ngValue]="c.id">
+          {{ c.nom }} {{ c.prenom }} — {{ c.telephone }} — {{ c.email }}
+        </option>
+      </select>
+
+      </div>
+
+      <!-- Champs de matching (auto-match sur tel/email/NPI) -->
+      <input formControlName="telephone" class="border p-2 rounded" placeholder="Téléphone" />
+      <input formControlName="email" class="border p-2 rounded" placeholder="Email" />
+
+      <!-- Infos client (désactivées si client existant) -->
+      <input formControlName="nom" class="border p-2 rounded" placeholder="Nom" [disabled]="isExistingClient()" />
+      <input formControlName="prenom" class="border p-2 rounded" placeholder="Prénom" [disabled]="isExistingClient()" />
+      <input formControlName="nationalite" class="border p-2 rounded" placeholder="Nationalité" [disabled]="isExistingClient()" />
+      <input formControlName="numeroPieceIdentite" class="border p-2 rounded" placeholder="Numéro PI" [disabled]="isExistingClient()" />
+    </div>
+
+    <!-- Badge info si client détecté -->
+    <div *ngIf="isExistingClient()" class="mt-3 text-sm px-3 py-2 rounded bg-green-50 border border-green-200 text-green-700">
+      Client existant détecté : <b>{{ matchedClient()?.nom }} {{ matchedClient()?.prenom }}</b>
+      ({{ matchedClient()?.telephone }} · {{ matchedClient()?.email }})
+    </div>
   </div>
-</div>
 
-
-  <div class="grid grid-cols-2 gap-4">
+  <!-- Dates -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <div>
       <label class="block text-sm mb-1">Date début</label>
       <input type="date" formControlName="dateDebut" class="w-full border px-3 py-2 rounded" />
@@ -36,18 +70,14 @@
     </div>
   </div>
 
+  <!-- Actions -->
   <div class="flex justify-end gap-3 mt-4">
-      <!-- Annuler -->
-    <button type="button"
-            class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition duration-150 ease-in-out"
-            (click)="cancel()">Annuler</button>
-
-    <!-- Réserver -->
-    <button type="submit"
-            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-150 ease-in-out"
-            [disabled]="reservationForm.invalid">
-      Réserver
-    </button>
+    <button type="button" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" (click)="cancel()">Annuler</button>
+   <button type="submit"
+          class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+          [disabled]="reservationForm.invalid">
+    Réserver
+  </button>
 
   </div>
 </form>

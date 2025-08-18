@@ -16,16 +16,16 @@ import { API } from '../../services/api';
 })
 export class RegisterComponent {
   f!: FormGroup;
-  //private apiUrl = 'http://localhost:8080/api/auth/register';
+  private apiUrl = 'http://localhost:8080/api/auth/register';
   // Utilisez l'API constante pour la version distante
-  private apiUrl = API + 'auth/register';
+  //private apiUrl = API + 'auth/register';
    ngOnInit() {
      this.f = this.fb.group({
     nom: ['', Validators.required],
     prenom: [''],
     email: ['', [Validators.required, Validators.email]],
     motDePasse: ['', Validators.required],
-    role: ['RECEPTIONNISTE']
+    role: ['']
   });
   }
 

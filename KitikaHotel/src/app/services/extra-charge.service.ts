@@ -12,9 +12,9 @@ export interface ExtraCharge {
 
 @Injectable({ providedIn: 'root' })
 export class ExtraChargeService {
-  //private apiUrl = 'http://localhost:8080/api/extra-charges';
+  private apiUrl = 'http://localhost:8080/api/extra-charges';
   // Utilisez l'API constante pour la version distante
-   private apiUrl = API + 'extra-charges';
+   //private apiUrl = API + 'extra-charges';
 
   constructor(private http: HttpClient) {}
 

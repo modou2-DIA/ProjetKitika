@@ -3,11 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { API } from './api';
+import { Utilisateur } from '../models/utilisateur.model';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  //api = 'http://localhost:8080/api/auth';
+  api = 'http://localhost:8080/api/auth';
   // Utilisez l'API constante pour la version distante
-   api = API + 'auth';
+   //api = API + 'auth';
   
   // Utilisez des BehaviorSubject pour la réactivité
   private _isAuthenticated = new BehaviorSubject<boolean>(false);
@@ -82,12 +83,28 @@ export class AuthService {
   isAuthenticated(): boolean {
     return this._isAuthenticated.value;
   }
-
+// dans AuthService (src/app/services/auth.service.ts)
+  /** renvoie le rôle courant (string|null) — tu as déjà getRole() dans ton code */
   getRole(): string | null {
     return this._userRole.value;
   }
 
+  /**
+   * Vérifie si l'utilisateur a l'un des rôles passés.
+   * - supporte string ou string[]
+   * - considère ADMIN comme super-utilisateur
+   */
+  hasAnyRole(roles: string | string[]): boolean {
+    const r = this.getRole();
+    if (!r) return false;
+    if (r === 'ADMIN') return true;
+    const arr = Array.isArray(roles) ? roles : [roles];
+    return arr.includes(r);
+  }
+
+
   getUserName(): string | null {
     return this._userName.value;
   }
+
 }

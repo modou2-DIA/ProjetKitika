@@ -2,21 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { API } from './api';
+import { Produit } from '../models/produit.model';
 // --- ProduitService ---
-export interface Produit {
-  id?: number;
-  nom: string;
-  type: string;
-  stock: number;
-  seuilCritique: number;
-  prixUnitaire: number;
-}
+
 
 @Injectable({ providedIn: 'root' })
 export class ProduitService {
-  //private apiUrl = 'http://localhost:8080/api/articles';
+  private apiUrl = 'http://localhost:8080/api/produits';
   // Utilisez l'API constante pour la version distante
-  private apiUrl = API + 'articles';
+  //private apiUrl = API + 'articles';
   constructor(private http: HttpClient) {}
 
  getAll(): Observable<Produit[]> {

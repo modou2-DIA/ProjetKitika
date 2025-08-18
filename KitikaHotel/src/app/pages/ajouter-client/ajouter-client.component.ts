@@ -7,15 +7,17 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { Client, ClientService } from '../../services/client.service';
-import { Reservation, ReservationService } from '../../services/reservation.service';
-import { Chambre, ChambreService } from '../../services/chambre.service';
+import {  ClientService } from '../../services/client.service';
+import {  ReservationService } from '../../services/reservation.service';
+import {  ChambreService } from '../../services/chambre.service';
 import { ReservationGroupee, ReservationGroupeeService } from '../../services/reservation-groupee.service';
 import { Observable, of } from 'rxjs';
 import { switchMap, tap, catchError } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogFeedbackComponent } from '../dialog-feedback/dialog-feedback.component';
-
+import { Client } from '../../models/client.model';
+import { Reservation } from '../../models/reservation.model';
+import { Chambre } from '../../models/chambre.model';
 
 @Component({
   selector: 'app-ajouter-client',

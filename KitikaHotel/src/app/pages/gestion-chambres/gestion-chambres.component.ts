@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Chambre, ChambreService } from '../../services/chambre.service';
+import {  ChambreService } from '../../services/chambre.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { Chambre } from '../../models/chambre.model';
 @Component({
   selector: 'app-gestion-chambres',
   standalone: true,

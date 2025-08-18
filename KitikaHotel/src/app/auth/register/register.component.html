@@ -1,14 +1,66 @@
-<div class="max-w-md mx-auto p-6 bg-white rounded shadow">
-    <h2 class="text-xl mb-4">Créer un compte</h2>
-    <form [formGroup]="f" (ngSubmit)="submit()">
-      <input formControlName="nom" placeholder="Nom" class="w-full mb-2 p-2 border rounded" />
-      <input formControlName="prenom" placeholder="Prénom" class="w-full mb-2 p-2 border rounded" />
-      <input formControlName="email" placeholder="Email" class="w-full mb-2 p-2 border rounded" />
-      <input type="password" formControlName="motDePasse" placeholder="Mot de passe" class="w-full mb-4 p-2 border rounded" />
-      <select formControlName="role" class="w-full mb-4 p-2 border rounded">
-        <option value="RECEPTIONNISTE">RECEPTIONNISTE</option>
-        <option value="ADMIN">ADMIN</option>
-      </select>
-      <button class="bg-green-600 text-white px-4 py-2 rounded">Créer</button>
+<div class="min-h-screen flex items-center justify-center bg-gray-100">
+  <div class="max-w-md w-full p-8 bg-white rounded-lg shadow-lg">
+    <h2 class="text-2xl font-bold text-center text-green-700 mb-6">Créer un nouveau compte</h2>
+
+    <form [formGroup]="f" (ngSubmit)="submit()" novalidate>
+      <!-- Nom & Prénom -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+          <input formControlName="nom" placeholder="Nom"
+            class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-green-500" />
+          <div *ngIf="f.get('nom')?.invalid && f.get('nom')?.touched"
+            class="text-sm text-red-600 mt-1">Nom requis</div>
+        </div>
+        <div>
+          <input formControlName="prenom" placeholder="Prénom"
+            class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-green-500" />
+          <div *ngIf="f.get('prenom')?.invalid && f.get('prenom')?.touched"
+            class="text-sm text-red-600 mt-1">Prénom requis</div>
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="mb-4">
+        <input formControlName="email" placeholder="Email" type="email"
+          class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-green-500" />
+        <div *ngIf="f.get('email')?.invalid && f.get('email')?.touched"
+          class="text-sm text-red-600 mt-1">Email valide requis</div>
+      </div>
+
+      <!-- Mot de passe -->
+      <div class="mb-4">
+        <input formControlName="motDePasse" type="password" placeholder="Mot de passe"
+          class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-green-500" />
+        <div *ngIf="f.get('motDePasse')?.invalid && f.get('motDePasse')?.touched"
+          class="text-sm text-red-600 mt-1">Mot de passe requis</div>
+      </div>
+
+      <!-- Rôles -->
+      <div class="mb-6">
+        <select formControlName="role"
+          class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-green-500">
+          <option value="" disabled selected>Choisir un rôle</option>
+          <option value="ADMIN">Administrateur</option>
+          <option value="RECEPTIONNISTE">Réceptionniste</option>
+          <option value="GOUVERNANTE">Gouvernante</option>
+          <option value="RESPONSABLE_HEBERGEMENT">Responsable Hébergement</option>
+          <option value="GESTIONNAIRE_RESTAURANT">Gestionnaire Restaurant</option>
+          <option value="BARMAN">Barman</option>
+          <option value="COMPTABLE">Comptable</option>
+        </select>
+        <div *ngIf="f.get('role')?.invalid && f.get('role')?.touched"
+          class="text-sm text-red-600 mt-1">Rôle requis</div>
+      </div>
+
+      <!-- Bouton submit -->
+      <button type="submit" [disabled]="f.invalid"
+        class="w-full bg-green-600 text-white py-3 rounded hover:bg-green-700 transition disabled:opacity-50">
+        Créer le compte
+      </button>
     </form>
+
+    <p class="text-center text-sm text-gray-500 mt-4">
+      Déjà inscrit ? <a routerLink="/login" class="text-green-600 hover:underline">Se connecter</a>
+    </p>
   </div>
+</div>

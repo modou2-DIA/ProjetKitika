@@ -1,26 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Client } from './client.service';
-import { Consommation } from './consommation.service';
-import { Reservation } from './reservation.service';
+
 import { API } from './api';
-export interface Facture {
-  id?: number;
-  dateEmission: string;
-  montantTotal: number;
-  client: Client;
-  consommations: Consommation[];
-  payee: boolean;
-  reservation?: Reservation; // Optionnel si la facture est liée à une réservation
-}
- 
+import { Facture } from '../models/facture.model';
+
 
 @Injectable({ providedIn: 'root' })
 export class FactureService {
-  //private apiUrl = 'http://localhost:8080/api/factures';
+  private apiUrl = 'http://localhost:8080/api/factures';
   // Utilisez l'API constante pour la version distante
-  private apiUrl = API + 'factures';
+  //private apiUrl = API + 'factures';
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Facture[]> {

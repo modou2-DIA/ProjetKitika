@@ -4,9 +4,11 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { switchMap } from 'rxjs/operators';
 
-import { ConsommationService, Consommation, CreateConsommationDto, Produit } from '../../services/consommation.service';
+import { ConsommationService,  CreateConsommationDto } from '../../services/consommation.service';
 import { ProduitService } from '../../services/produit.service';
 import { FicheSejour } from '../../services/fiche-sejour.service';
+import { Consommation } from '../../models/consommation.model';
+import { Produit } from '../../models/produit.model';
 
 @Component({
   selector: 'app-fiche-sejour',
@@ -62,10 +64,12 @@ export class FicheSejourComponent implements OnInit {
     // Création du DTO en conformité avec la nouvelle structure du backend
     const dto: CreateConsommationDto = {
       ficheId: this.ficheSejour.id,
-      articles: [{
+      articles: [/* {
+        nom:'',
+
         produitId: this.nouvelArticle.produitId!,
         quantite: this.nouvelArticle.quantite
-      }]
+      }*/]
     };
 
     this.consommationService.ajouter(dto).pipe(

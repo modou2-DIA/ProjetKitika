@@ -2,8 +2,9 @@ import { Component, ViewChild, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { ClientService, Client } from '../../services/client.service';
+import { ClientService } from '../../services/client.service';
 import { catchError } from 'rxjs/operators';
+import { Client } from '../../models/client.model';
 import { of } from 'rxjs';
 @Component({
   selector: 'app-clients',

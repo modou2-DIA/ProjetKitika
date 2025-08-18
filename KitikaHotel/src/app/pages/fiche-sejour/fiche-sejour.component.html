@@ -21,7 +21,7 @@
         class="p-2 border rounded-md focus:ring-2 focus:ring-blue-500">
         <option [ngValue]="null" disabled>Sélectionnez un produit</option>
         <option *ngFor="let produit of produitsDisponibles" [ngValue]="produit.id">
-          {{ produit.nom }} ({{ produit.prix | currency:'TND' }})
+          {{ produit.nom }} ({{ produit.prixUnitaire| currency:'$' }})
         </option>
       </select>
     </div>
@@ -73,7 +73,7 @@
       <!-- Liste des articles de la consommation -->
       <ul class="ml-4 list-disc list-inside text-gray-600">
         <li *ngFor="let article of consommation.articles">
-          {{ article.quantite }} x {{ article.produit.nom }} ({{ article.produit.prix | currency:'TND' }}) = {{ article.prixTotal | currency:'TND' }}
+          {{ article.quantite }} x {{ article.nom }} ({{ article.prixUnitaire| currency:'$' }}) = {{ article.prixTotal | currency:'TND' }}
         </li>
       </ul>
     </li>
@@ -81,7 +81,7 @@
   
   <!-- Total des consommations -->
   <div class="mt-4 pt-4 border-t-2 border-gray-200 text-right">
-    <p class="text-xl font-bold text-blue-800">Total des consommations: {{ getTotalConsommations() | currency:'TND' }}</p>
+    <p class="text-xl font-bold text-blue-800">Total des consommations: {{ getTotalConsommations() | currency:'$' }}</p>
   </div>
 </div>
 

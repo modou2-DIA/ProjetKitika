@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { FactureService, Facture } from '../../services/facture.service';
+import { FactureService } from '../../services/facture.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DialogFeedbackComponent } from '../dialog-feedback/dialog-feedback.component';
+import { Facture } from '../../models/facture.model';
 
 @Component({
   selector: 'app-facturation',
