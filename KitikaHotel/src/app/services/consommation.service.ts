@@ -24,9 +24,9 @@ export interface CreateConsommationDto {
 })
 export class ConsommationService {
   
-  private apiUrl = 'http://localhost:8080/api/consommations';
+  //private apiUrl = 'http://localhost:8080/api/consommations';
   // Utilisez l'API constante pour la version distante
-  //private apiUrl = API + 'consommations';
+  private apiUrl = API + 'consommations';
 
   constructor(private http: HttpClient) {}
 

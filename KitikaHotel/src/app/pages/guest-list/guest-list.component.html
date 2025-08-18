@@ -1,133 +1,87 @@
-<div class="container mx-auto p-6">
- 
-    <h2 class="text-2xl font-bold text-blue-800 mb-4">Guest List</h2>
-    <p class="text-gray-600 mb-4">Consultez la liste des clients présents, leurs réservations et les actions possibles.</p>
+<div class="max-w-7xl mx-auto px-4 py-6">
+  <h2 class="text-2xl font-bold text-blue-800 mb-2">Guest List</h2>
+  <p class="text-gray-600 mb-6">Consultez la liste des clients présents, leurs réservations et les actions possibles.</p>
 
-   
-    <div class="flex flex-wrap gap-4 items-center mb-4">
-      <label class="flex items-center gap-2">
-        <span class="text-sm">Date :</span>
-        <input type="date" [(ngModel)]="selectedDate" (change)="load()" class="border px-2 py-1 rounded" />
-      </label>
+  <!-- Filtres -->
+  <div class="flex flex-col md:flex-row md:flex-wrap gap-4 items-center mb-6">
+    <label class="flex items-center gap-2 w-full md:w-auto">
+      <span class="text-sm">Date :</span>
+      <input type="date" [(ngModel)]="selectedDate" (change)="load()" class="border px-3 py-2 rounded w-full md:w-auto" />
+    </label>
 
-      <input type="text" [(ngModel)]="searchTerm" (input)="applyFilter()" placeholder="Rechercher (nom, chambre...)" class="border px-3 py-1 rounded flex-1 md:w-1/3" />
-      <button class="bg-blue-600 text-white px-4 py-2 rounded" (click)="load()">Rafraîchir</button>
-    </div>
+    <input type="text"
+           [(ngModel)]="searchTerm"
+           (input)="applyFilter()"
+           placeholder="Rechercher (nom, chambre...)"
+           class="border px-4 py-2 rounded w-full md:flex-1 md:w-1/3" />
 
-
-  <div *ngIf="guestList">
-    <!-- Scheduled for the day -->
-    <section class="mb-6 bg-white shadow rounded p-4">
-      <h3 class="font-semibold mb-2">Réservations prévues (présence sur la date sélectionnée)</h3>
-      <table class="w-full table-auto">
-        <thead class="bg-gray-100">
-          <tr>
-            <th class="px-3 py-2 text-left">Client</th>
-            <th class="px-3 py-2 text-left">Téléphone</th>
-            <th class="px-3 py-2 text-left">Chambre</th>
-            <th class="px-3 py-2 text-left">Période</th>
-            <th class="px-3 py-2 text-left">Statut</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let r of filtered(guestList.reservationsPrevues)">
-            <td class="px-3 py-2">{{ r.clientNom }} {{ r.clientPrenom }}</td>
-            <td class="px-3 py-2">{{ r.clientTelephone || '-' }}</td>
-            <td class="px-3 py-2">{{ r.chambreNumero }} • {{ r.chambreType }}</td>
-            <td class="px-3 py-2">{{ formatDate(r.dateDebut) }} → {{ formatDate(r.dateFin) }}</td>
-            <td class="px-3 py-2">{{ r.statut }}</td>
-          </tr>
-          <tr *ngIf="(filtered(guestList.reservationsPrevues) || []).length === 0">
-            <td colspan="5" class="px-3 py-4 text-center text-gray-500">Aucune réservation prévue</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
-<!-- Arrivées -->
-<section class="mb-6 bg-white shadow rounded p-4">
-  <h3 class="font-semibold mb-2">Arrivées (date sélectionnée)</h3>
-  <table class="w-full table-auto">
-    <thead class="bg-gray-100">
-      <tr>
-        <th class="px-3 py-2 text-left">Client</th>
-        <th class="px-3 py-2 text-left">Chambre</th>
-        <th class="px-3 py-2 text-left">Téléphone</th>
-        <th class="px-3 py-2 text-left">Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let r of filtered(guestList.arrivees)">
-        <td class="px-3 py-2">{{ r.clientNom }} {{ r.clientPrenom }}</td>
-        <td class="px-3 py-2">{{ r.chambreNumero }}</td>
-        <td class="px-3 py-2">{{ r.clientTelephone || '-' }}</td>
-        <td class="px-3 py-2">
-         <button *ngIf="r.statut !== 'Checked-in'"
-        (click)="checkIn(r.reservationId)"
-        class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700">
-        Check-In
-      </button>
-      <span *ngIf="r.statut === 'Checked-in'" class="text-green-700 font-semibold">Déjà check-in</span>
-
-        </td>
-      </tr>
-      <tr *ngIf="(filtered(guestList.arrivees) || []).length === 0">
-        <td colspan="4" class="px-3 py-4 text-center text-gray-500">Aucune arrivée</td>
-      </tr>
-    </tbody>
-  </table>
-</section>
-
-
-    <!-- Présents -->
-    <section class="mb-6 bg-white shadow rounded p-4">
-      <h3 class="font-semibold mb-2">Clients présents (check-in)</h3>
-      <table class="w-full table-auto">
-        <thead class="bg-gray-100">
-          <tr>
-            <th class="px-3 py-2 text-left">Client</th>
-            <th class="px-3 py-2 text-left">Chambre</th>
-            <th class="px-3 py-2 text-left">Période</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let r of filtered(guestList.presents)">
-            <td class="px-3 py-2">{{ r.clientNom }} {{ r.clientPrenom }}</td>
-            <td class="px-3 py-2">{{ r.chambreNumero }}</td>
-            <td class="px-3 py-2">{{ formatDate(r.dateDebut) }} → {{ formatDate(r.dateFin) }}</td>
-          </tr>
-          <tr *ngIf="(filtered(guestList.presents) || []).length === 0">
-            <td colspan="3" class="px-3 py-4 text-center text-gray-500">Aucun client présent</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
-    <!-- Départs -->
-    <section class="mb-6 bg-white shadow rounded p-4">
-      <h3 class="font-semibold mb-2">Départs (date sélectionnée)</h3>
-      <table class="w-full table-auto">
-        <thead class="bg-gray-100">
-          <tr>
-            <th class="px-3 py-2 text-left">Client</th>
-            <th class="px-3 py-2 text-left">Chambre</th>
-            <th class="px-3 py-2 text-left">Téléphone</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let r of filtered(guestList.departs)">
-            <td class="px-3 py-2">{{ r.clientNom }} {{ r.clientPrenom }}</td>
-            <td class="px-3 py-2">{{ r.chambreNumero }}</td>
-            <td class="px-3 py-2">{{ r.clientTelephone || '-' }}</td>
-          </tr>
-          <tr *ngIf="(filtered(guestList.departs) || []).length === 0">
-            <td colspan="3" class="px-3 py-4 text-center text-gray-500">Aucun départ prévu</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
+    <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition" (click)="load()">Rafraîchir</button>
   </div>
 
-  <div *ngIf="!guestList" class="text-center text-gray-500 p-6">Chargement ...</div>
- 
+  <!-- Résultats -->
+  <div *ngIf="guestList" class="space-y-6">
+
+    <!-- Section générique -->
+    <ng-container *ngFor="let section of [
+      { title: 'Réservations prévues', data: guestList.reservationsPrevues, cols: 5 },
+      { title: 'Arrivées', data: guestList.arrivees, cols: 4 },
+      { title: 'Clients présents', data: guestList.presents, cols: 3 },
+      { title: 'Départs', data: guestList.departs, cols: 3 }
+    ]; let i = index">
+      <section class="bg-white shadow rounded-lg p-4">
+        <h3 class="font-semibold text-lg mb-3">{{ section.title }} ({{ selectedDate | date:'dd/MM/yyyy' }})</h3>
+
+        <div class="overflow-x-auto">
+          <table class="min-w-full table-auto text-sm">
+            <thead class="bg-gray-100">
+              <tr>
+                <ng-container [ngSwitch]="section.cols">
+                  <ng-container *ngSwitchCase="5">
+                    <th class="px-3 py-2 text-left">Client</th>
+                    <th class="px-3 py-2 text-left">Téléphone</th>
+                    <th class="px-3 py-2 text-left">Chambre</th>
+                    <th class="px-3 py-2 text-left">Période</th>
+                    <th class="px-3 py-2 text-left">Statut</th>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="4">
+                    <th class="px-3 py-2 text-left">Client</th>
+                    <th class="px-3 py-2 text-left">Chambre</th>
+                    <th class="px-3 py-2 text-left">Téléphone</th>
+                    <th class="px-3 py-2 text-left">Action</th>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="3">
+                    <th class="px-3 py-2 text-left">Client</th>
+                    <th class="px-3 py-2 text-left">Chambre</th>
+                    <th class="px-3 py-2 text-left">Période</th>
+                  </ng-container>
+                </ng-container>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let r of filtered(section.data)">
+                <td class="px-3 py-2">{{ r.clientNom }} {{ r.clientPrenom }}</td>
+                <td class="px-3 py-2" *ngIf="section.cols > 2">{{ r.chambreNumero }} <span *ngIf="r.chambreType">• {{ r.chambreType }}</span></td>
+                <td class="px-3 py-2" *ngIf="section.cols === 4 || section.cols === 5">{{ r.clientTelephone || '-' }}</td>
+                <td class="px-3 py-2" *ngIf="section.cols === 5 || section.cols === 3">{{ formatDate(r.dateDebut) }} → {{ formatDate(r.dateFin) }}</td>
+                <td class="px-3 py-2" *ngIf="section.title === 'Réservations prévues'">{{ r.statut }}</td>
+                <td class="px-3 py-2" *ngIf="section.title === 'Arrivées'">
+                  <button *ngIf="r.statut !== 'Checked-in'"
+                          (click)="checkIn(r.reservationId)"
+                          class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700">
+                    Check-In
+                  </button>
+                  <span *ngIf="r.statut === 'Checked-in'" class="text-green-700 font-semibold">Déjà check-in</span>
+                </td>
+              </tr>
+              <tr *ngIf="(filtered(section.data) || []).length === 0">
+                <td [attr.colspan]="section.cols" class="px-3 py-4 text-center text-gray-500">Aucune donnée</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </ng-container>
+  </div>
+
+  <div *ngIf="!guestList" class="text-center text-gray-500 py-6">Chargement ...</div>
 </div>

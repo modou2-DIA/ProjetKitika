@@ -8,7 +8,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { switchMap } from 'rxjs/operators';
 import { ReservationService } from '../../services/reservation.service';
-import Swal from 'sweetalert2';
+import { DialogService } from '../dialog.service/dialog.service.component';
 
 @Component({
   selector: 'app-reservation-groupee',
@@ -28,7 +28,8 @@ export class ReservationGroupeeComponent implements OnInit {
     private chambreService: ChambreService,
     private reservationGroupeeService: ReservationGroupeeService,
     private clientService: ClientService,
-    private reservationService: ReservationService
+    private reservationService: ReservationService,
+    private dialogService: DialogService
   ) {}
 
   ngOnInit(): void {
@@ -81,18 +82,38 @@ export class ReservationGroupeeComponent implements OnInit {
   }
 
   supprimerReservation(index: number) {
-    this.reservations.removeAt(index);
+    this.dialogService.confirm(
+      'Supprimer la réservation',
+      'Êtes-vous sûr de vouloir supprimer cette réservation ?',
+      'Supprimer',
+      'Annuler'
+    ).subscribe(result => {
+      if (result) {
+        this.reservations.removeAt(index);
+        this.dialogService.success('Réservation supprimée de la liste');
+      }
+    });
   }
 
   chargerChambres() {
-    this.chambreService.getChambresLibres().subscribe(data => {
-      this.chambresDisponibles = data;
+    this.chambreService.getChambresLibres().subscribe({
+      next: (data) => {
+        this.chambresDisponibles = data;
+      },
+      error: (error) => {
+        this.dialogService.error('Erreur lors du chargement des chambres disponibles');
+      }
     });
   }
 
   chargerSocietes() {
-    this.clientService.getSocietes().subscribe(data => {
-      this.societesExistantes = data;
+    this.clientService.getSocietes().subscribe({
+      next: (data) => {
+        this.societesExistantes = data;
+      },
+      error: (error) => {
+        this.dialogService.error('Erreur lors du chargement des sociétés');
+      }
     });
   }
 
@@ -136,14 +157,27 @@ export class ReservationGroupeeComponent implements OnInit {
   soumettre() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      Swal.fire({
-        icon: 'warning',
-        title: 'Formulaire incomplet',
-        text: 'Veuillez remplir tous les champs obligatoires avant de soumettre.'
-      });
+      this.dialogService.error(
+        'Veuillez remplir tous les champs obligatoires avant de soumettre.',
+        'Formulaire incomplet'
+      );
       return;
     }
 
+    // Confirmer avant la soumission
+    this.dialogService.confirm(
+      'Confirmer la création',
+      'Êtes-vous sûr de vouloir créer cette réservation groupée ?',
+      'Créer',
+      'Annuler'
+    ).subscribe(result => {
+      if (result) {
+        this.creerReservationGroupee();
+      }
+    });
+  }
+
+  private creerReservationGroupee() {
     const groupPayload = {
       nomGroupe: this.form.value.nomGroupe,
       dateDebut: this.form.value.dateDebut,
@@ -165,23 +199,50 @@ export class ReservationGroupeeComponent implements OnInit {
       })
     ).subscribe({
       next: () => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Succès',
-          text: 'La réservation groupée a été enregistrée avec succès ✅'
-        });
+        this.dialogService.success(
+          'La réservation groupée a été enregistrée avec succès ✅',
+          'Succès'
+        );
 
-        this.form.reset();
-        this.reservations.clear();
-        this.ajouterReservation();
+        this.resetForm();
       },
       error: (e) => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Erreur',
-          text: e.error?.message || 'Échec lors de l’enregistrement des réservations ❌'
-        });
+        const errorMessage = e.error?.message || 'Échec lors de l\'enregistrement des réservations ❌';
+        this.dialogService.error(errorMessage, 'Erreur');
       }
     });
+  }
+
+  private resetForm() {
+    this.form.reset();
+    this.reservations.clear();
+    this.ajouterReservation();
+    this.societeSelectionnee = null;
+  }
+
+  // Méthode utilitaire pour valider les dates
+  validateDates(): boolean {
+    const dateDebut = this.form.get('dateDebut')?.value;
+    const dateFin = this.form.get('dateFin')?.value;
+    
+    if (dateDebut && dateFin && new Date(dateFin) <= new Date(dateDebut)) {
+      this.dialogService.error(
+        'La date de fin doit être postérieure à la date de début',
+        'Dates invalides'
+      );
+      return false;
+    }
+    return true;
+  }
+
+  // Méthode pour vérifier la disponibilité avant soumission
+  verifierDisponibilite() {
+    if (!this.validateDates()) {
+      return;
+    }
+
+    // Logique de vérification de disponibilité si nécessaire
+    // Puis appeler soumettre() si tout est OK
+    this.soumettre();
   }
 }

@@ -31,8 +31,8 @@ export interface ReservationGroupee {
   providedIn: 'root'
 })
 export class ReservationGroupeeService {
-  private apiUrl = 'http://localhost:8080/api/reservations-groupees';
-  // private apiUrl = API + 'reservations-groupees'; // version distante
+  //private apiUrl = 'http://localhost:8080/api/reservations-groupees';
+   private apiUrl = API + 'reservations-groupees'; // version distante
 
   constructor(private http: HttpClient) {}
 

@@ -15,9 +15,9 @@ export interface Utilisateur {
 
 @Injectable({ providedIn: 'root' })
 export class UtilisateurService {
-  private apiUrl = 'http://localhost:8080/api/utilisateurs';
+  //private apiUrl = 'http://localhost:8080/api/utilisateurs';
   // Utilisez l'API constante pour la version distante
-   //private apiUrl = API + 'utilisateurs';
+   private apiUrl = API + 'utilisateurs';
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Utilisateur[]> {

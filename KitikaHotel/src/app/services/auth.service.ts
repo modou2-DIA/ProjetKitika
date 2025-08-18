@@ -6,9 +6,9 @@ import { API } from './api';
 import { Utilisateur } from '../models/utilisateur.model';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  api = 'http://localhost:8080/api/auth';
+  //api = 'http://localhost:8080/api/auth';
   // Utilisez l'API constante pour la version distante
-   //api = API + 'auth';
+   api = API + 'auth';
   
   // Utilisez des BehaviorSubject pour la réactivité
   private _isAuthenticated = new BehaviorSubject<boolean>(false);

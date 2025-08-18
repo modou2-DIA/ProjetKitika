@@ -8,9 +8,9 @@ import { Produit } from '../models/produit.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProduitService {
-  private apiUrl = 'http://localhost:8080/api/produits';
+  //private apiUrl = 'http://localhost:8080/api/produits';
   // Utilisez l'API constante pour la version distante
-  //private apiUrl = API + 'articles';
+  private apiUrl = API + 'articles';
   constructor(private http: HttpClient) {}
 
  getAll(): Observable<Produit[]> {

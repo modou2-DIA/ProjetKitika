@@ -11,9 +11,9 @@ import { Chambre } from '../models/chambre.model';
 
 @Injectable({ providedIn: 'root' })
 export class ChambreService {
-  private apiUrl = 'http://localhost:8080/api/chambres';
+  //private apiUrl = 'http://localhost:8080/api/chambres';
   // Utilisez l'API constante pour la version distante
-   //private apiUrl = API + 'chambres';
+   private apiUrl = API + 'chambres';
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Chambre[]> {

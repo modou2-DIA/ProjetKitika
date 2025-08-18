@@ -14,9 +14,9 @@ export interface AuditLog {
 
 @Injectable({ providedIn: 'root' })
 export class AuditLogService {
-  private api = 'http://localhost:8080/api/audit';
+  //private api = 'http://localhost:8080/api/audit';
   // Use the API constant if you want to use the remote API
-   //private api = API + 'audit';
+   private api = API + 'audit';
 
   constructor(private http: HttpClient) {}
 

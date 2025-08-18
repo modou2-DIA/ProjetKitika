@@ -8,9 +8,9 @@ import { Facture } from '../models/facture.model';
 
 @Injectable({ providedIn: 'root' })
 export class FactureService {
-  private apiUrl = 'http://localhost:8080/api/factures';
+  //private apiUrl = 'http://localhost:8080/api/factures';
   // Utilisez l'API constante pour la version distante
-  //private apiUrl = API + 'factures';
+  private apiUrl = API + 'factures';
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Facture[]> {

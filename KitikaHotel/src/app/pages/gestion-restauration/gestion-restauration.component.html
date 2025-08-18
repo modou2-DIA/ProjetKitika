@@ -282,8 +282,8 @@
       <h3 class="text-2xl font-bold text-gray-800">Détails de la Consommation</h3>
       <div class="mb-4 text-gray-600">
       <span *ngIf="ficheSelectionnee">
-        Client : <strong>{{ ficheSelectionnee.reservation?.client?.nom }} {{ ficheSelectionnee.reservation?.client?.prenom }}</strong> 
-        — Chambre <strong>{{ ficheSelectionnee.reservation?.chambre?.numero }}</strong>
+        Client : <strong>{{ ficheSelectionnee.reservation.client.nom }} {{ ficheSelectionnee.reservation?.client?.prenom }}</strong> 
+        — Chambre <strong>{{ ficheSelectionnee.reservation.chambre.numero }}</strong>
       </span>
     </div>
 

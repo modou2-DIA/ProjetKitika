@@ -1,83 +1,78 @@
-<h2 class="text-xl font-semibold text-gray-800 mb-4">Nouvelle Réservation</h2>
+<div class="max-w-4xl mx-auto px-4 py-6 bg-white rounded-lg shadow-md">
+  <h2 class="text-2xl font-bold text-blue-800 mb-6">Nouvelle Réservation</h2>
 
-<form [formGroup]="reservationForm" (ngSubmit)="submitReservation()" class="space-y-4">
-
-  <!-- Chambre -->
-  <div>
-    <label class="block text-sm mb-1">Chambre</label>
-    <select formControlName="chambreId" class="w-full border rounded px-3 py-2">
-      <option value="" disabled>-- Sélectionner --</option>
-      <option *ngFor="let chambre of chambresDispo" [value]="chambre.id">
-        Chambre {{ chambre.numero }} — {{ chambre.type }}
-      </option>
-    </select>
-  </div>
-
-  <!-- Sélecteur client existant -->
-  <div class="border rounded p-4 bg-gray-50">
-    <div class="flex items-center justify-between mb-3">
-      <h3 class="text-sm font-semibold text-gray-700">Client</h3>
-      <button type="button"
-              class="text-xs underline"
-              *ngIf="isExistingClient()"
-              (click)="clearMatchedClient()">
-        Changer (client nouveau)
-      </button>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-      <!-- Choisir client existant -->
-      <div class="md:col-span-2">
-        <label class="block text-xs text-gray-500 mb-1">Client existant</label>
-      <select class="w-full border rounded px-3 py-2"
-        [ngModel]="matchedClient()?.id || ''"
-        (ngModelChange)="chooseExisting($event)">
-        <option value="">— Aucun (client nouveau) —</option>
-        <option *ngFor="let c of clients" [ngValue]="c.id">
-          {{ c.nom }} {{ c.prenom }} — {{ c.telephone }} — {{ c.email }}
+  <form [formGroup]="reservationForm" (ngSubmit)="submitReservation()" class="space-y-6">
+    
+    <!-- Sélection chambre -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Chambre</label>
+      <select formControlName="chambreId" class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-blue-300">
+        <option value="" disabled>-- Sélectionner --</option>
+        <option *ngFor="let chambre of chambresDispo" [value]="chambre.id">
+          Chambre {{ chambre.numero }} — {{ chambre.type }}
         </option>
       </select>
+    </div>
 
+    <!-- Bloc client -->
+    <div class="border rounded-lg p-5 bg-gray-50">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-2">
+        <h3 class="text-base font-semibold text-gray-700">Client</h3>
+        <button type="button" class="text-sm text-blue-600 hover:underline" *ngIf="isExistingClient()" (click)="clearMatchedClient()">
+          Changer (client nouveau)
+        </button>
       </div>
 
-      <!-- Champs de matching (auto-match sur tel/email/NPI) -->
-      <input formControlName="telephone" class="border p-2 rounded" placeholder="Téléphone" />
-      <input formControlName="email" class="border p-2 rounded" placeholder="Email" />
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Sélecteur client existant -->
+        <div class="md:col-span-2">
+          <label class="block text-sm text-gray-600 mb-1">Client existant</label>
+          <select class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-blue-300"
+                  [ngModel]="matchedClient()?.id || ''"
+                  (ngModelChange)="chooseExisting($event)">
+            <option value="">— Aucun (client nouveau) —</option>
+            <option *ngFor="let c of clients" [ngValue]="c.id">
+              {{ c.nom }} {{ c.prenom }} — {{ c.telephone }} — {{ c.email }}
+            </option>
+          </select>
+        </div>
 
-      <!-- Infos client (désactivées si client existant) -->
-      <input formControlName="nom" class="border p-2 rounded" placeholder="Nom" [disabled]="isExistingClient()" />
-      <input formControlName="prenom" class="border p-2 rounded" placeholder="Prénom" [disabled]="isExistingClient()" />
-      <input formControlName="nationalite" class="border p-2 rounded" placeholder="Nationalité" [disabled]="isExistingClient()" />
-      <input formControlName="numeroPieceIdentite" class="border p-2 rounded" placeholder="Numéro PI" [disabled]="isExistingClient()" />
+        <!-- Matching -->
+        <input formControlName="telephone" class="border rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-blue-300" placeholder="Téléphone" />
+        <input formControlName="email" class="border rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-blue-300" placeholder="Email" />
+
+        <!-- Infos client -->
+        <input formControlName="nom" class="border rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-blue-300" placeholder="Nom" [disabled]="isExistingClient()" />
+        <input formControlName="prenom" class="border rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-blue-300" placeholder="Prénom" [disabled]="isExistingClient()" />
+        <input formControlName="nationalite" class="border rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-blue-300" placeholder="Nationalité" [disabled]="isExistingClient()" />
+        <input formControlName="numeroPieceIdentite" class="border rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-blue-300" placeholder="Numéro PI" [disabled]="isExistingClient()" />
+      </div>
+
+      <!-- Badge client détecté -->
+      <div *ngIf="isExistingClient()" class="mt-4 text-sm px-4 py-3 rounded-lg bg-green-50 border border-green-200 text-green-700">
+        Client existant détecté : <strong>{{ matchedClient()?.nom }} {{ matchedClient()?.prenom }}</strong>
+        ({{ matchedClient()?.telephone }} · {{ matchedClient()?.email }})
+      </div>
     </div>
 
-    <!-- Badge info si client détecté -->
-    <div *ngIf="isExistingClient()" class="mt-3 text-sm px-3 py-2 rounded bg-green-50 border border-green-200 text-green-700">
-      Client existant détecté : <b>{{ matchedClient()?.nom }} {{ matchedClient()?.prenom }}</b>
-      ({{ matchedClient()?.telephone }} · {{ matchedClient()?.email }})
+    <!-- Dates -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Date début</label>
+        <input type="date" formControlName="dateDebut" class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-blue-300" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Date fin</label>
+        <input type="date" formControlName="dateFin" class="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-blue-300" />
+      </div>
     </div>
-  </div>
 
-  <!-- Dates -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div>
-      <label class="block text-sm mb-1">Date début</label>
-      <input type="date" formControlName="dateDebut" class="w-full border px-3 py-2 rounded" />
+    <!-- Actions -->
+    <div class="flex flex-col md:flex-row justify-end gap-3 pt-4">
+      <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition" (click)="cancel()">Annuler</button>
+      <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50" [disabled]="reservationForm.invalid">
+        Réserver
+      </button>
     </div>
-    <div>
-      <label class="block text-sm mb-1">Date fin</label>
-      <input type="date" formControlName="dateFin" class="w-full border px-3 py-2 rounded" />
-    </div>
-  </div>
-
-  <!-- Actions -->
-  <div class="flex justify-end gap-3 mt-4">
-    <button type="button" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" (click)="cancel()">Annuler</button>
-   <button type="submit"
-          class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
-          [disabled]="reservationForm.invalid">
-    Réserver
-  </button>
-
-  </div>
-</form>
+  </form>
+</div>

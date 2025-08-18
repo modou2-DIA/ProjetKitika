@@ -9,9 +9,9 @@ import { API } from './api';
 
 @Injectable({ providedIn: 'root' })
 export class FicheClientService {
-  private apiUrl = 'http://localhost:8080/api/fiches-client';
+  //private apiUrl = 'http://localhost:8080/api/fiches-client';
   // Utilisez l'API constante pour la version distante
-  //private apiUrl = API + 'fiches-client';
+  private apiUrl = API + 'fiches-client';
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<FicheClient[]> {

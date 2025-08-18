@@ -20,9 +20,9 @@ export interface ReservationSmartPayload {
 }
 @Injectable({ providedIn: 'root' })
 export class ReservationService {
-  private apiUrl = 'http://localhost:8080/api/reservations';
+  //private apiUrl = 'http://localhost:8080/api/reservations';
   // Utilisez l'API constante pour la version distante
-   //private apiUrl = API + 'reservations';
+   private apiUrl = API + 'reservations';
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Reservation[]> {

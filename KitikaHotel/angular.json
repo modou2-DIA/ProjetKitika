@@ -15,6 +15,10 @@
       "prefix": "app",
       "architect": {
         "build": {
+          "allowedCommonJsDependencies": [
+              "sweetalert2"
+            ],
+
         "builder": "@angular-devkit/build-angular:application",
         "options": {
           "outputPath": "dist/kitika-hotel",
@@ -40,9 +44,9 @@
           "production": {
             "budgets": [
               {
-                "type": "initial",
-                "maximumWarning": "500kB",
-                "maximumError": "1MB"
+                  "type": "initial",
+                  "maximumWarning": "1.2mb",
+                  "maximumError": "1.5mb"
               },
               {
                 "type": "anyComponentStyle",
@@ -58,9 +62,9 @@
               "baseHref": "https://modou2-DIA.github.io/ProjetKitika/",
               "budgets": [
                 {
-                  "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+               "type": "initial",
+              "maximumWarning": "2mb",
+              "maximumError": "5mb"
                 },
                 {
                   "type": "anyComponentStyle",
