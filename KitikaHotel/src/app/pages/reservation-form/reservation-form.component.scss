@@ -1,0 +1,8 @@
+/* Scrollbar personnalisée */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #cbd5e0; /* gris clair */
+  border-radius: 3px;
+}

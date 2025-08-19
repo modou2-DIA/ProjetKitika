@@ -1,8 +1,9 @@
-<div class="max-w-4xl mx-auto px-4 py-6 bg-white rounded-lg shadow-md">
+
+<div class="max-w-4xl mx-auto px-4 py-6 bg-white rounded-lg shadow-md h-[80vh] overflow-y-auto">
   <h2 class="text-2xl font-bold text-blue-800 mb-6">Nouvelle Réservation</h2>
 
   <form [formGroup]="reservationForm" (ngSubmit)="submitReservation()" class="space-y-6">
-    
+      
     <!-- Sélection chambre -->
     <div>
       <label class="block text-sm font-medium text-gray-700 mb-1">Chambre</label>
@@ -74,5 +75,6 @@
         Réserver
       </button>
     </div>
+    <!-- ... ton contenu reste inchangé ... -->
   </form>
 </div>
