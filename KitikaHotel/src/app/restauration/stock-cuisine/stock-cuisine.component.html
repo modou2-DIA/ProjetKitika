@@ -1,0 +1,19 @@
+<div class="p-6">
+  <h2 class="text-xl font-bold mb-4">📦 Stock Cuisine</h2>
+  <table class="w-full table-auto border-collapse bg-white shadow rounded-2xl overflow-hidden">
+    <thead class="bg-blue-700 text-white">
+      <tr>
+        <th class="p-3 text-left">Article</th>
+        <th class="p-3 text-left">Quantité</th>
+        <th class="p-3 text-left">Unité</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of stock" class="border-b hover:bg-gray-100">
+        <td class="p-3">{{ item.nom }}</td>
+        <td class="p-3">{{ item.quantite }}</td>
+        <td class="p-3">{{ item.unite }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

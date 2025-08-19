@@ -1,0 +1,23 @@
+<div class="p-6">
+  <h2 class="text-xl font-bold mb-4">🧾 Facturation Restaurant</h2>
+  <div class="overflow-x-auto">
+    <table class="w-full table-auto border-collapse bg-white shadow rounded-2xl overflow-hidden">
+      <thead class="bg-blue-700 text-white">
+        <tr>
+          <th class="p-3 text-left">N° Facture</th>
+          <th class="p-3 text-left">Client</th>
+          <th class="p-3 text-left">Montant</th>
+          <th class="p-3 text-left">Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let facture of factures" class="border-b hover:bg-gray-100">
+          <td class="p-3">{{ facture.numero }}</td>
+          <td class="p-3">{{ facture.client }}</td>
+          <td class="p-3 font-semibold">{{ facture.montant }} FCFA</td>
+          <td class="p-3">{{ facture.date }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

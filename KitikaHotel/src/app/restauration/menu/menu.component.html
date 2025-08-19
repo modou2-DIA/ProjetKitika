@@ -1,0 +1,13 @@
+<div class="p-6">
+  <h2 class="text-xl font-bold mb-4">🍽️ Menu du Restaurant</h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div *ngFor="let plat of plats" class="bg-white rounded-2xl shadow p-4 hover:shadow-lg transition">
+      <h3 class="text-lg font-semibold">{{ plat.nom }}</h3>
+      <p class="text-sm text-gray-600">{{ plat.description }}</p>
+      <div class="mt-2 flex justify-between items-center">
+        <span class="text-sm text-blue-700">{{ plat.categorie }}</span>
+        <span class="font-bold">{{ plat.prix }} FCFA</span>
+      </div>
+    </div>
+  </div>
+</div>

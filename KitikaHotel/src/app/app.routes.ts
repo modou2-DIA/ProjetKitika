@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Component } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 // Composants principaux
@@ -19,7 +19,9 @@ import { FacturationComponent } from './pages/facturation/facturation.component'
 import { ReservationGroupeeComponent } from './pages/reservation-groupee/reservation-groupee.component';
 import { GestionRestaurationComponent } from './pages/gestion-restauration/gestion-restauration.component';
 import { StockComponent } from './pages/stock/stock.component';
-
+import { MenuComponent } from './restauration/menu/menu.component';
+import { StockCuisineComponent } from './restauration/stock-cuisine/stock-cuisine.component';
+import { FacturationRestoComponent } from './restauration/facturation-resto/facturation-resto.component';
 import {PlanningPersonnelComponent}  from './pages/planning-personnel/planning-personnel.component';
 // Guards
 import { AuthGuard } from './services/auth.guard';
@@ -69,6 +71,9 @@ export const routes: Routes = [
          // ================= Responsable Restauration =================
 
          { path: 'restauration', component: GestionRestaurationComponent, canActivate: [RoleGuard], data: { role: 'GESTIONNAIRE_RESTAURANT' } },
+         {path:'menu', component:MenuComponent,canActivate:[RoleGuard],data:{role:'GESTIONNAIRE_RESTAURANT'}},
+      {path:'stock-cuisine', component:StockCuisineComponent,canActivate:[RoleGuard],data:{role:'GESTIONNAIRE_RESTAURANT'}},
+      {path:'facturation-resto', component:FacturationRestoComponent,canActivate:[RoleGuard],data:{role:'GESTIONNAIRE_RESTAURANT'}},
       
       // ================= Responsable Hébergement =================
       { path: 'hebergement-resp', loadComponent: () => import('./pages/hebergement-resp/hebergement-resp.component').then(m => m.HebergementRespComponent), canActivate: [RoleGuard], data: { role: 'RESP_HEBERGEMENT' } },
